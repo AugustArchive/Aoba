@@ -17,11 +17,11 @@
 ### Setting up
 - Clone the repository (``git clone https://github.com/nowoel/Aoba.git``) or if you don't have Git, just go to "Clone or download" and click "Download ZIP" then extract
 - Go into the root directory (``cd Aoba``) and install of the required dependencies (NPM comes with Node.js): ``npm install``
-- Create a `config.json` file in the `src` directory of the bot and fill out the [example](/#example-config)
+- Create a `config.json` file in the `src` directory of the bot and fill out the [example](https://github.com/nowoel/Aoba#example-config)
 - Compile TypeScript (``npm run build``)
 - Go into the `build` directory and run `bot.js`
   - If you get an error saying "Missing `config.json`," use the following commands for your machine:
-    - Windows: `copy /F src/config.json build/config.json`
+    - Windows: `copy src/config.json build/config.json`
     - Unix: `cp src/config.json build/config.json`
 
 ### Example Config
