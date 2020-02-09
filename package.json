@@ -1,0 +1,42 @@
+{
+  "name": "aoba",
+  "description": "🚤 Discord bot to give you information from different documentation sites, push notifications in a Discord channel from different various sites",
+  "version": "1.0.0",
+  "main": "build/bot.js",
+  "license": "MIT",
+  "repository": "https://github.com/nowoel/Aoba",
+  "author": "Noel",
+  "scripts": {
+    "move:unix": "cp src/config.json build/config.json",
+    "move:win": "copy src/config.json build/config.json",
+    "compile": "tsc && echo \"Compiled TypeScript\"",
+    "build": "yarn lint && yarn test && yarn compile && yarn move",
+    "move": "yarn move:unix && echo \"Moved configuration files to the build directory\"",
+    "test": "jest --config jest.config.js",
+    "lint": "eslint src --ext .ts --fix"
+  },
+  "dependencies": {
+    "@augu/immutable": "0.1.6",
+    "@augu/sysinfo": "0.1.1",
+    "common-tags": "1.8.0",
+    "eris": "0.11.2",
+    "ioredis": "4.14.1",
+    "mongodb": "3.5.2",
+    "prom-client": "11.5.3"
+  },
+  "devDependencies": {
+    "@augu/eslint-config": "1.2.0",
+    "@typescript-eslint/parser": "2.19.0",
+    "@typescript-eslint/eslint-plugin": "2.19.0",
+    "@types/common-tags": "1.8.0",
+    "@types/ioredis": "4.14.7",
+    "@types/jest": "25.1.2",
+    "@types/mongodb": "3.3.15",
+    "@types/node": "13.7.0",
+    "eslint": "6.8.0",
+    "jest": "25.1.0",
+    "nodemon": "2.0.2",
+    "typescript": "3.7.5",
+    "ts-jest": "25.2.0"
+  }
+}

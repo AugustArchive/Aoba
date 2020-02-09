@@ -23,6 +23,7 @@
   - If you get an error saying "Missing `config.json`," use the following commands for your machine:
     - Windows: `copy src/config.json build/config.json`
     - Unix: `cp src/config.json build/config.json`
+    - Or you can use `npm run move:[unix/win]` or `yarn move:[unix/win]` without typing the commands manually
 
 ### Example Config
 ```js
