@@ -1,6 +1,7 @@
 // Inject all internal structures
 export * from './MessageCollector';
 export * from './ServiceProvider';
+export * from './ArgumentParser';
 export * from './Documentation';
 export * from './Listener';
 export * from './Context';
