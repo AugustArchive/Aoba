@@ -1,5 +1,5 @@
 {
-  "extends": [
-    "config:base"
-  ]
+  "branchPrefix": "deps/",
+  "automerge": true,
+  "extends": ["config:base"]
 }
