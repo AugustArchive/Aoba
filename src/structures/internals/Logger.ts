@@ -80,28 +80,28 @@ export class Logger {
     }
 
     const date = this.getCurrentDate();
-    const msg = message.map(m => m instanceof Object ? inspect(m) : m);
+    const msg = message.map(m => m instanceof Object ? inspect(m) : m).join('\n');
 
     process.stdout.write(`${date} ${lvlText} => ${msg}\n`);
   }
 
-  info(message: LogMessage) {
+  info(...message: LogMessage) {
     return this.write(LogLevel.INFO, ...message);
   }
 
-  warn(message: LogMessage) {
+  warn(...message: LogMessage) {
     return this.write(LogLevel.WARN, ...message);
   }
 
-  error(message: LogMessage) {
+  error(...message: LogMessage) {
     return this.write(LogLevel.ERROR, ...message);
   }
 
-  discord(message: LogMessage) {
+  discord(...message: LogMessage) {
     return this.write(LogLevel.DISCORD, ...message);
   }
 
-  database(message: LogMessage) {
+  database(...message: LogMessage) {
     return this.write(LogLevel.DATABASE, ...message);
   }
 }
