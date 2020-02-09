@@ -31,9 +31,6 @@
   // Database URL for MongoDB
   "databaseUrl": "",
 
-  // URL for Sentry (optional)
-  "sentryDSN": "",
-
   // The bot's environment
   "environment": "",
 
