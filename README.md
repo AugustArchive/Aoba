@@ -1,3 +1,5 @@
+<img src='./assets/Aoba.png' width='150' height='150' align='left' style='float: left; margin: 0 10px 0 0;' alt='Aoba' />
+
 # Aoba
 [![Discord](https://discordapp.com/api/guilds/382725233695522816/embed.png)](https://discord.gg/yDnbEDH) [![Donate on Patreon](https://img.shields.io/badge/patreon-auguwu-blue.svg?logo=patreon&logoWidth=30&logoColor=F96854&style=popout-square)](https://patreon.com/auguwu)
 
@@ -71,3 +73,5 @@
 
 ## LICENSE
 Aoba is released under the **MIT** License. View [here](/LICENSE) for more details.
+
+Icon and character is not made by me, credit to the original authors.
