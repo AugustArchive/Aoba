@@ -73,7 +73,7 @@
 
 ## Questions (maybe?)
 ### Why does most of the documentation commands go slow (on the first run)?!
-Well, the answer is that some API documentations are made with a framework so it won't load the prerendered data until the document is fully loaded. So we use Google's Puppeteer module to web scrape and create a `tmp/cache` directory of the scraped content we find. For an example, [Eris](https://abal.moe/Eris/docs) are built with React (from inspecting the content), so we use Puppeteer to fully load the page since when we do a HTTP request, it returns nothing in the `data-reactroot` element. For other API libraries that are slow to fetch (i.e: TypeScript's API documentation), we still use Puppeteer. If you have a better solution, issue a PR with a `breaking` tag.
+Well, the answer is that some API documentations are made with a framework so it won't load the prerendered data until the document is fully loaded. So we use Google's Puppeteer module to web scrape and create a `tmp/cache` directory of the scraped content we find. For an example, [Eris](https://abal.moe/Eris/docs)' documentation is built with React (from inspecting the content), so we use Puppeteer to fully load the page since when we do a HTTP request, it returns nothing in the `data-reactroot` element. For other API libraries that are slow to fetch (i.e: TypeScript's API documentation), we still use Puppeteer in this case to get the rendered page instead of making it slow to fetch. Even though Puppeteer is using the Chrome/Chromium API (from the docs itself), it'll be "slow" to get the data. If you have a better solution, issue a PR with a `breaking` tag.
 
 ## LICENSE
 Aoba is released under the **MIT** License. View [here](/LICENSE) for more details.
