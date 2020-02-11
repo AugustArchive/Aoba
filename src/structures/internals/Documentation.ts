@@ -1,7 +1,7 @@
 import { Constants } from '../../util'; 
 import { Aoba } from '.';
 
-export abstract class Documentation<T> {
+export abstract class Documentation<T = any> {
   /**
    * The documentation's class name
    */

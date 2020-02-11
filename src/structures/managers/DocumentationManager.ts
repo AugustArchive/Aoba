@@ -27,7 +27,7 @@ export default class DocumentationManager extends Collection<Documentation> {
   configure() {
     const docs = Object.values(Docs);
     for (const doc of docs) {
-      const d = new doc(this.bot);
+      const d = new (doc as any)(this.bot);
       this.set(d.name, d);
       this.logger.info(`Registered ${d.name} documentation class`);
     }
