@@ -52,7 +52,7 @@ export default class HttpResponse {
   /**
    * Represents the body as a JSON value
    */
-  json() {
+  json<T = any>(): T {
     return JSON.parse(this.body.toString());
   }
 
