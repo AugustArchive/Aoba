@@ -16,9 +16,10 @@ export function includesMarker(str: string) {
 
 /**
  * Gets a path from the current directory
- * @param path The path to append
+ * @param paths A list of paths to include
  */
-export const getArbitrayPath = (path: string) => `${process.cwd()}${sep}${path}`;
+export const getArbitrayPath = (...paths: string[]) => `${process.cwd()}${sep}${paths.length === 0 ? paths[0] : paths.join(sep)}`;
 
 // Export the constants as a "namespace"
 export { Constants };
+export * from './PermissionUtil';

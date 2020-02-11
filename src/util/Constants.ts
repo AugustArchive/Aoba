@@ -41,15 +41,10 @@ export enum DiscordPermissions {
  * 
  * Avaliable sites:
  * 
- * - discord.js.org
  * - abal.moe/Eris
- * - docs.rs
  * - typescriptlang.org
- * - nodejs.org
  */
 export enum DocSites {
-  DiscordJS = '',
   Eris = 'https://abal.moe/Eris/docs/${class}',
-  TypeScript = 'https://typescriptlang.org',
-  NodeJS = ''
+  TypeScript = 'https://typescriptlang.org/docs/${type}/${topic}.html'
 }

@@ -1,7 +1,7 @@
 import { Constants } from '../../util'; 
 import { Aoba } from '.';
 
-export abstract class Documentation {
+export abstract class Documentation<T> {
   /**
    * The documentation's class name
    */
@@ -31,5 +31,5 @@ export abstract class Documentation {
    * Function to get the information needed
    * @param args Any additional parameters to include
    */
-  public abstract provide<T = { [x: string]: any }>(...args: any[]): Promise<T>;
+  public abstract provide(...args: any[]): Promise<T>;
 }

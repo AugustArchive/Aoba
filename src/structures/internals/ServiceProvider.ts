@@ -1,6 +1,6 @@
 import { Aoba } from '.';
 
-export abstract class ServiceProvider {
+export abstract class ServiceProvider<T> {
   /**
    * The service provider's name
    */
@@ -25,5 +25,5 @@ export abstract class ServiceProvider {
    * Function to get information from that service provider
    * @param args Additional arguments to supply
    */
-  public abstract provide<T = { [x: string]: any }>(...args: any[]): Promise<T>;
+  public abstract provide(...args: any[]): Promise<T>;
 }
