@@ -86,21 +86,6 @@ export default class CommandService {
     for (const pre of prefixes) if (msg.content.startsWith(pre)) prefix = pre;
     if (!prefix) return;
 
-    const mentioned = msg.content.match(new RegExp(`^<@!?${this.bot.client.user.id}> `)) || msg.content.match(new RegExp(`^<@!?${this.bot.client.user.id}> `));
-    if (mentioned !== null) {
-      const embed = this.bot.getEmbed();
-      embed
-        .setAuthor(`${this.bot.client.user.username}#${this.bot.client.user.discriminator} | Information`, undefined, this.bot.client.user.dynamicAvatarURL('png', 1024))
-        .setDescription(stripIndents`
-          **H-hello! My name is Aoba and I am bot that provides notifications to a text channel or give documentation from different API sites!**
-
-          **S-since you pinged me, I'll show you a list of prefixes that you can use to call any command!**
-          ${prefixes.map(s => `${s}<command>`)}
-        `);
-
-      return msg.channel.createMessage({ embed: embed.build() });
-    }
-
     // Concat all arguments
     const args = msg.content.slice(prefix.length).trim().split(/ +/g);
     const ctx = new CommandContext(this.bot, msg, args);

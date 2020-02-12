@@ -1,4 +1,4 @@
-import { EmbedBuilder, HttpClient, Logger } from '..';
+import { EmbedBuilder, HttpClient, Logger, RssFeedEmitter as RssEmitter } from '..';
 import { Client as DiscordClient } from 'eris';
 import CommandStatisticsManager from '../managers/CommandStatsManager';
 import ServiceProviderManager from '../managers/ServiceProviderManager';
@@ -10,13 +10,11 @@ import ConfigManager from '../managers/ConfigManager';
 import EventManager from '../managers/EventManager';
 import RedisManager from '../managers/RedisManager';
 import TaskManager from '../managers/TaskManager';
-import RssEmitter from '../rss/RssEmitter';
 
 export interface Config {
   databaseUrl: string;
   environment: 'development' | 'production';
   discord: {
-    prefixes: string[];
     token: string;
   };
   redis: {
@@ -53,7 +51,7 @@ export class Aoba {
     this.prometheus = new PrometheusManager();
     this.providers = new ServiceProviderManager(this);
     this.commands = new CommandManager(this);
-    this.database = new DatabaseManager(this);
+    this.database = new DatabaseManager(config);
     this.logger = new Logger();
     this.client = new DiscordClient(config.discord.token, {
       disableEveryone: true,
@@ -87,10 +85,10 @@ export class Aoba {
     await this.tasks.configure();
 
     this.logger.info('Loaded all tasks! Now building all service providers...');
-    this.providers.configure();
+    await this.providers.configure();
 
     this.logger.info('Loaded all service providers! Now building all documentation classes...');
-    this.documentation.configure();
+    await this.documentation.configure();
 
     this.logger.info('Loaded all documentation classes! Now connecting to MongoDB...');
     await this.database.connect();

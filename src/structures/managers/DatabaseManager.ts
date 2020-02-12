@@ -1,5 +1,5 @@
 import { MongoClient, Admin, Db } from 'mongodb';
-import { Aoba, Logger } from '..';
+import { Config, Logger } from '..';
 
 interface GuildModel {
   providers: {
@@ -69,11 +69,9 @@ export default class DatabaseManager {
    * Creates a new instance of the database manager
    * @param url The database URL
    */
-  constructor(private bot: Aoba) {
-    const url = bot.config.get<string>('databaseUrl', 'mongodb://localhost:27017');
-
+  constructor(config: Config) {
     this.logger = new Logger();
-    this.client = new MongoClient(url, {
+    this.client = new MongoClient(config.databaseUrl, {
       useUnifiedTopology: true,
       useNewUrlParser: true
     });
@@ -134,10 +132,9 @@ export default class DatabaseManager {
    * @param id The guild's ID
    */
   async createGuild(id: string) {
-    const prefixes = this.bot.config.get<string[]>('discord.prefixes')!;
     const model: GuildModel = {
       guildID: id,
-      prefix: prefixes[0],
+      prefix: 'aoba ',
       providers: {
         nintendo: {
           channelID: null,
@@ -205,10 +202,9 @@ export default class DatabaseManager {
    * @param id The guild's ID
    */
   async createUser(id: string) {
-    const prefixes = this.bot.config.get<string[]>('discord.prefixes')!;
     const model: UserModel = {
       userID: id,
-      prefix: prefixes[0],
+      prefix: 'aoba ',
       blacklisted: {
         enforcer: null,
         reason: null,

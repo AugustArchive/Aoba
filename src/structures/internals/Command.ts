@@ -95,8 +95,7 @@ export abstract class Command {
    * The command's signature
    */
   get signature() {
-    const prefix = this.bot.config.getPrefixes();
-    return this.info.usage !== '' ? `${prefix[0]}${this.info.name} ${this.info.usage}` : `${prefix[0]}${this.info.name}`;
+    return this.info.usage !== '' ? `aoba ${this.info.name} ${this.info.usage}` : `aoba ${this.info.name}`;
   }
 
   /**

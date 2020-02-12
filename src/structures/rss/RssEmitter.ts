@@ -48,7 +48,7 @@ class FeedError extends Error {
   }
 }
 
-export default class RssFeedEmitter extends EventEmitter {
+export class RssFeedEmitter extends EventEmitter {
   public historyLengthMultipler: number = 3;
   public feeds: FeedConfig[] = [];
   private http: HttpClient = new HttpClient();

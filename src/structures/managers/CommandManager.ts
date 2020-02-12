@@ -46,7 +46,7 @@ export default class CommandManager extends Collection<Command> {
 
     const modules = readdirSync(this.path);
     for (const mod of modules) {
-      const stats = await fs.stat(mod);
+      const stats = await fs.stat(utils.getArbitrayPath('commands', mod));
       if (!stats.isDirectory()) {
         this.logger.warn('Received a file in path directory, continuing');
         continue;

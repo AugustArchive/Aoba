@@ -46,7 +46,7 @@ export class Logger {
     const year = now.getFullYear();
 
     // Example: Feb 9, 2020 at 15:01:45PM
-    return this.colors.gray(`${month} ${day}, ${year} at ${hours}:${minutes}:${seconds}${ampm}`);
+    return this.colors.gray(`[${month} ${day}, ${year} ${hours}:${minutes}:${seconds}${ampm}]`);
   }
 
   /**
@@ -59,23 +59,23 @@ export class Logger {
 
     switch (level) {
       case LogLevel.INFO: {
-        lvlText = this.colors.cyan(`INFO/${process.pid}`);
+        lvlText = this.colors.cyan(`[INFO/${process.pid}]`);
       } break;
 
       case LogLevel.WARN: {
-        lvlText = this.colors.yellow(`WARN/${process.pid}`);
+        lvlText = this.colors.yellow(`[WARN/${process.pid}]`);
       } break;
 
       case LogLevel.ERROR: {
-        lvlText = this.colors.red(`ERROR/${process.pid}`);
+        lvlText = this.colors.red(`[ERROR/${process.pid}]`);
       } break;
 
       case LogLevel.DISCORD: {
-        lvlText = leeks.hex('#', `DISCORD/${process.pid}`);
+        lvlText = leeks.hex('#7289DA', `[DISCORD/${process.pid}]`);
       } break;
 
       case LogLevel.DATABASE: {
-        lvlText = leeks.hex('#', `DATABASE/${process.pid}`);
+        lvlText = leeks.hex('#589636', `[DATABASE/${process.pid}]`);
       } break;
     }
 

@@ -13,7 +13,7 @@
     "build": "yarn lint && yarn test && yarn compile && yarn move",
     "move": "yarn move:unix && echo \"Moved configuration files to the build directory\"",
     "test": "jest --config jest.config.js",
-    "lint": "eslint src --ext .ts --fix"
+    "lint": "eslint src --ext .ts --fix && echo \"Linted the repository\""
   },
   "dependencies": {
     "@augu/immutable": "0.1.6",
@@ -21,7 +21,7 @@
     "cheerio": "1.0.0-rc.3",
     "common-tags": "1.8.0",
     "eris": "0.11.2",
-    "feedparser": "^2.2.9",
+    "feedparser": "2.2.9",
     "ioredis": "4.14.1",
     "leeks.js": "0.0.8",
     "mongodb": "3.5.2",

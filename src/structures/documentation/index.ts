@@ -7,4 +7,3 @@ export type DocumentationFunction<T> = (this: Browser, url: string) => Promise<T
 
 // Export all documentation
 export * from './DiscordJS';
-export * from './NodeJS';

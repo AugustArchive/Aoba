@@ -80,8 +80,6 @@ export default class RedisManager {
       return;
     }
 
-    await this.client.connect();
-
     this.client.once('ready', () => {
       this.logger.info('Redis connection was established.');
 

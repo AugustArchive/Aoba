@@ -1,6 +1,6 @@
 import { Aoba, Logger, Documentation } from '..';
 import { Collection } from '@augu/immutable';
-import * as Docs from '../documentation';
+import * as utils from '../../util';
 
 export default class DocumentationManager extends Collection<Documentation> {
   /**
@@ -24,8 +24,10 @@ export default class DocumentationManager extends Collection<Documentation> {
     this.bot = bot;
   }
 
-  configure() {
+  async configure() {
+    const Docs = await import(utils.getArbitrayPath('structures', 'documentation'));
     const docs = Object.values(Docs);
+
     for (const doc of docs) {
       const d: Documentation = new (doc as any)(this.bot);
       this.set(d.name, d);

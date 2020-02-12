@@ -1,6 +1,6 @@
 import { Aoba, Logger, ServiceProvider } from '..';
 import { Collection } from '@augu/immutable';
-import * as Providers from '../providers';
+import * as utils from '../../util';
 
 export default class ServiceProviderManager extends Collection<ServiceProvider> {
   /**
@@ -24,8 +24,9 @@ export default class ServiceProviderManager extends Collection<ServiceProvider> 
     this.bot = bot;
   }
 
-  configure() {
-    const providers: (typeof ServiceProvider)[] = Object.values(Providers);
+  async configure() {
+    const Providers = await import(utils.getArbitrayPath('structures', 'providers'));
+    const providers = Object.values(Providers);
 
     this.logger.info(`Now loading ${providers.length} providers!`);
     for (const provider of providers) {
@@ -34,29 +35,5 @@ export default class ServiceProviderManager extends Collection<ServiceProvider> 
 
       this.logger.info(`Built the ${instance.name} service provider`);
     }
-  }
-
-  /**
-   * Gets the Nintendo provider
-   */
-  getProvider(name: 'nintendo'): Providers.NintendoServiceProvider;
-
-  /**
-   * Gets the Twitch provider
-   */
-  getProvider(name: 'twitch'): Providers.TwitchServiceProvider;
-
-  /**
-   * Gets the YouTube provider
-   */
-  getProvider(name: 'youtube'): Providers.YouTubeServiceProvider;
-  
-  /**
-   * Gets any provider
-   * @param name The name of the provider
-   */
-  getProvider(name: string): ServiceProvider;
-  getProvider(name: string) {
-    return this.get(name)!;
   }
 }
