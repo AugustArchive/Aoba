@@ -2,7 +2,7 @@ import Parser, { Item, Meta, Image, Enclosure } from 'feedparser';
 import { EventEmitter } from 'events';
 import { HttpClient } from '../http';
 
-interface FeedItem extends Item {
+export interface FeedItem extends Item {
   [x: string]: any;
   description: string;
   categories: string[];

@@ -25,7 +25,7 @@ export default class ServiceProviderManager extends Collection<ServiceProvider> 
   }
 
   configure() {
-    const providers = Object.values(Providers);
+    const providers: (typeof ServiceProvider)[] = Object.values(Providers);
 
     this.logger.info(`Now loading ${providers.length} providers!`);
     for (const provider of providers) {
@@ -34,5 +34,29 @@ export default class ServiceProviderManager extends Collection<ServiceProvider> 
 
       this.logger.info(`Built the ${instance.name} service provider`);
     }
+  }
+
+  /**
+   * Gets the Nintendo provider
+   */
+  getProvider(name: 'nintendo'): Providers.NintendoServiceProvider;
+
+  /**
+   * Gets the Twitch provider
+   */
+  getProvider(name: 'twitch'): Providers.TwitchServiceProvider;
+
+  /**
+   * Gets the YouTube provider
+   */
+  getProvider(name: 'youtube'): Providers.YouTubeServiceProvider;
+  
+  /**
+   * Gets any provider
+   * @param name The name of the provider
+   */
+  getProvider(name: string): ServiceProvider;
+  getProvider(name: string) {
+    return this.get(name)!;
   }
 }
