@@ -15,6 +15,11 @@ export default class PrometheusManager {
   public messagesSeen: Counter;
 
   /**
+   * The ping from all shards
+   */
+  public shardPing: Gauge;
+
+  /**
    * How many guilds Aoba has joined/left
    */
   public guildCount: Gauge;
@@ -46,6 +51,11 @@ export default class PrometheusManager {
     this.guildCount = new Gauge({
       name: 'aoba_guild_count',
       help: 'How many times Aoba has joined or left a guild'
+    });
+
+    this.shardPing = new Gauge({
+      name: 'aoba_shard_ping',
+      help: 'The average ping from all shards'
     });
 
     this.logger = new Logger();
