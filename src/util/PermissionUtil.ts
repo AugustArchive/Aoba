@@ -1,4 +1,4 @@
-import { Permission, Constants } from 'eris';
+import { Permission } from 'eris';
 
 enum Permissions {
   createInstantInvite = 'Create Instant Invite',

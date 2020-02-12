@@ -10,6 +10,7 @@ import ConfigManager from '../managers/ConfigManager';
 import EventManager from '../managers/EventManager';
 import RedisManager from '../managers/RedisManager';
 import TaskManager from '../managers/TaskManager';
+import RssEmitter from '../rss/RssEmitter';
 
 export interface Config {
   databaseUrl: string;
@@ -44,6 +45,7 @@ export class Aoba {
   public redis: RedisManager;
   public tasks: TaskManager;
   public http: HttpClient;
+  public rss: RssEmitter;
 
   constructor(config: Config) {
     this.documentation = new DocumentationManager(this);
@@ -63,6 +65,7 @@ export class Aoba {
     this.redis = new RedisManager(this);
     this.tasks = new TaskManager(this);
     this.http = new HttpClient();
+    this.rss = new RssEmitter();
   }
 
   getEmbed() {
