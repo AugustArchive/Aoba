@@ -13,6 +13,13 @@ export class ArgumentParser {
   }
 
   /**
+   * Gets the raw arguments
+   */
+  get raw() {
+    return this.args;
+  }
+
+  /**
    * Gets the argument by it's index
    * @param i The argument index
    */

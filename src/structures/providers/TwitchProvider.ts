@@ -1,5 +1,15 @@
 import { Aoba, ServiceProvider } from '..';
 
-export class MixerProvider extends ServiceProvider {
-  
+interface Twitch {
+  [x: string]: any;
+}
+
+export class TwitchServiceProvider extends ServiceProvider<Twitch | null> {
+  constructor(bot: Aoba) {
+    super(bot, 'twitch');
+  }
+
+  async provide(userID: string) {
+    return { a: 'b' };
+  }
 }

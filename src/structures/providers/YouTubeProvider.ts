@@ -1,5 +1,15 @@
 import { Aoba, ServiceProvider } from '..';
 
-export class MixerProvider extends ServiceProvider {
-  
+interface YouTube {
+  [x: string]: any;
+}
+
+export class YouTubeServiceProvider extends ServiceProvider<YouTube | null> {
+  constructor(bot: Aoba) {
+    super(bot, 'youtube');
+  }
+
+  async provide(channelID: string) {
+    return { a: 'b' };
+  }
 }

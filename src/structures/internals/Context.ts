@@ -75,6 +75,13 @@ export class CommandContext {
   }
 
   /**
+   * Gets the current channel
+   */
+  get channel() {
+    return this.message.channel;
+  }
+
+  /**
    * Sends a message to the current text channel
    * @param content The content to send
    * @param embed An embed to send with the content sent
