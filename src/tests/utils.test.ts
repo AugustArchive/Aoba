@@ -10,15 +10,16 @@ describe('Utilities', () => {
 
   describe('Permission Utilities', () => {
     const permissions = 1 << 11;
+    const perm = utils.PermissionUtils.toString(permissions);
     it('should return "sendMessages" from bytecode "1 << 11"', () =>
-      expect(permissions).toStrictEqual('Send Messages')
+      expect(perm).toStrictEqual('Send Messages')
     );
   });
 
   describe('Utilities#includesMarker', () => {
     const text = 'hi im a ${at}';
     it('should include marker', () =>
-      expect(text).toStrictEqual(true)
+      expect(utils.includesMarker(text)).toStrictEqual(true)
     );
   });
 });
