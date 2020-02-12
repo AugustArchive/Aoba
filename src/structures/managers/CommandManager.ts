@@ -54,8 +54,12 @@ export default class CommandManager extends Collection<Command> {
 
       const getCommandPath = (...paths: string[]) => utils.getArbitrayPath('commands', ...paths);
       const files = await fs.readdir(getCommandPath(mod));
-      this.logger.info(`Found ${files.length} files in module ${mod}`);
+      if (!files.length) {
+        this.logger.warn(`No commands were found in path ${this.logger.colors.gray(getCommandPath(mod))}`);
+        continue;
+      }
 
+      this.logger.info(`Found ${files.length} files in module ${mod}`);
       for (const file of files) {
         const instance = await import(getCommandPath(mod, file));
         const command: Command = instance.default ? new instance.default() : new instance();

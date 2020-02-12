@@ -117,6 +117,7 @@ export default class CommandService {
         return ctx.embed(embed);
       }
 
+      invocation.command.inject(this.bot);
       try {
         await invocation.command.run(ctx);
 
