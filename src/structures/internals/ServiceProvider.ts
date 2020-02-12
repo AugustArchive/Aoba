@@ -1,6 +1,6 @@
 import { Aoba } from '.';
 
-export abstract class ServiceProvider<T> {
+export abstract class ServiceProvider<T = any> {
   /**
    * The service provider's name
    */

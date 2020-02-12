@@ -49,7 +49,7 @@ export class Aoba {
     this.documentation = new DocumentationManager(this);
     this.statistics = new CommandStatisticsManager();
     this.prometheus = new PrometheusManager();
-    this.providers = new ServiceProviderManager();
+    this.providers = new ServiceProviderManager(this);
     this.commands = new CommandManager(this);
     this.database = new DatabaseManager(this);
     this.logger = new Logger();
@@ -65,6 +65,11 @@ export class Aoba {
     this.http = new HttpClient();
   }
 
+  getEmbed() {
+    return new EmbedBuilder()
+      .setColor(0x9189D1);
+  }
+
   async start() {
     this.logger.info('Now building Aoba...');
     await new Promise(resolve => setTimeout(resolve, 2000));
@@ -75,7 +80,10 @@ export class Aoba {
     this.logger.info('Loaded all commands! Now building all events...');
     await this.events.configure();
 
-    this.logger.info('Loaded all events! Now building all service providers...');
+    this.logger.info('Loaded all events! Now building all tasks...');
+    await this.tasks.configure();
+
+    this.logger.info('Loaded all tasks! Now building all service providers...');
     this.providers.configure();
 
     this.logger.info('Loaded all service providers! Now building all documentation classes...');
@@ -94,8 +102,9 @@ export class Aoba {
   async dispose() {
     this.logger.warn('Disposing connections...');
     await this.database.dispose();
-    await this.redis.dispose();
+    this.redis.dispose();
     this.client.disconnect({ reconnect: false });
+    await new Promise(resolve => setTimeout(resolve, 2000));
 
     this.logger.warn('Clearing all collection values...');
     this.documentation.clear();

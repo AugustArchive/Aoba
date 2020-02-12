@@ -52,11 +52,12 @@ export default class CommandManager extends Collection<Command> {
         continue;
       }
 
-      const files = await fs.readdir(`${this.path}${utils.sep}${mod}`);
+      const getCommandPath = (...paths: string[]) => utils.getArbitrayPath('commands', ...paths);
+      const files = await fs.readdir(getCommandPath(mod));
       this.logger.info(`Found ${files.length} files in module ${mod}`);
 
       for (const file of files) {
-        const instance = await import(`${this.path}${utils.sep}${mod}${utils.sep}${file}`);
+        const instance = await import(getCommandPath(mod, file));
         const command: Command = instance.default ? new instance.default() : new instance();
         if (command.info.disabled && command.info.disabled.is) this.logger.warn(`Command ${command.info.name} is disabled from running for ${command.info.disabled.reason}`);
 
