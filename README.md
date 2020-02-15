@@ -9,6 +9,10 @@
 - View information from different services (Twitter, YouTube, Mixer, etc)
 - Pull up documentation from various sites (MDN, Discord.js, Eris, docs.rs, etc)
 
+## Branch Details
+- [master](https://github.com/nowoel/Aoba/tree/stable) **~** Stable version of Aoba, mostly used in the Production bot
+- [bleeding](https://github.com/nowoel/Aoba/tree/bleeding) **~** Cutting edge features that are unstable
+
 ## Installation
 ### Requirements
 - Node.js
