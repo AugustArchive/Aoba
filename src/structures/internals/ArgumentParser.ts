@@ -32,7 +32,7 @@ export class ArgumentParser {
    * @param i The argument index
    */
   has(i: number) {
-    return this.args[i] !== null;
+    return this.args[i] === null;
   }
 
   /**
