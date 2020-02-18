@@ -45,10 +45,7 @@ export default class RedisManager {
 
     this.connected = false;
     this.logger = new Logger();
-    this.client = new RedisClient({
-      lazyConnect: false,
-      ...config
-    });
+    this.client = new RedisClient(config);
     this.status = Status.NotConnected;
     this.bot = bot;
   }

@@ -1,4 +1,4 @@
-import { Command, CommandContext } from '../../structures';
+import { Command, CommandContext, Subcommand } from '../../structures';
 import { Constants } from '../../util';
 
 export default class TestCommand extends Command {
@@ -14,9 +14,12 @@ export default class TestCommand extends Command {
   }
 
   async run(ctx: CommandContext) {
-    if (!ctx.args.has(0)) return void ctx.send(`unknown usage: \`${this.signature}\``);
+    const subcommands = this.subcommands.map(s => s.name).join(', ');
+    return void ctx.send('subcommands: E');
+  }
 
-    const text = ctx.args.slice(0).join(' ');
-    return void ctx.send(text);
+  @Subcommand('e', 'test subcommand')
+  async e(ctx: CommandContext) {
+    return void ctx.send('e');
   }
 }

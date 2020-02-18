@@ -90,6 +90,7 @@ export default class CommandService {
     const args = msg.content.slice(prefix.length).trim().split(/ +/g);
     const ctx = new CommandContext(this.bot, msg, args);
     const invocation = this.getCommand(ctx);
+    let run!: (ctx: CommandContext) => Promise<void>;
 
     if (invocation) {
       const invoked = invocation.canInvoke();
@@ -102,9 +103,18 @@ export default class CommandService {
         return ctx.embed(embed);
       }
 
+      run = invocation.command.run;
+      if (ctx.args.raw.length) {
+        for (const arg of ctx.args.raw) {
+          if (!invocation.command.subcommands.empty && invocation.command.subcommands.find(sub => sub.name === arg)) {
+            run = invocation.command.subcommands.find(s => s.name === arg)!.exec;
+          }
+        }
+      }
+
       invocation.command.inject(this.bot);
       try {
-        await invocation.command.run(ctx);
+        await run.apply(invocation.command, [ctx]);
 
         this.bot.prometheus.commandsExecuted.inc();
         this.bot.statistics.inc(invocation.command);

@@ -1,5 +1,5 @@
+import { Aoba, Command, Logger, getSubcommandDefinitions } from '..';
 import { promises as fs, readdirSync } from 'fs';
-import { Aoba, Command, Logger } from '..';
 import { Collection } from '@augu/immutable';
 import CommandService from '../services/CommandService';
 import * as utils from '../../util';
@@ -64,6 +64,17 @@ export default class CommandManager extends Collection<Command> {
         const instance = await import(getCommandPath(mod, file));
         const command: Command = instance.default ? new instance.default() : new instance();
         if (command.info.disabled && command.info.disabled.is) this.logger.warn(`Command ${command.info.name} is disabled from running for ${command.info.disabled.reason}`);
+
+        const subcommands = getSubcommandDefinitions(command);
+        if (!subcommands.length) {
+          this.logger.warn(`No subcommands were registered in ${command.info.name} command.`);
+          continue;
+        }
+
+        for (const sub of subcommands) {
+          command.subcommands.set(sub.name, sub);
+          this.logger.info(`Registered ${sub.name} subcommand from command ${command.info.name}!`);
+        }
 
         this.set(command.info.name, command);
         this.logger.info(`Registered command ${command.info.name}`);

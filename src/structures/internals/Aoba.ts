@@ -17,7 +17,7 @@ export interface Config {
   discord: {
     token: string;
   };
-  redis: {
+  redis?: {
     host: string;
     port: number;
     db: number;
@@ -40,7 +40,7 @@ export class Aoba {
   public client: DiscordClient;
   public config: ConfigManager;
   public events: EventManager;
-  public redis: RedisManager;
+  public redis!: RedisManager;
   public tasks: TaskManager;
   public http: HttpClient;
   public rss: RssEmitter;
@@ -60,10 +60,13 @@ export class Aoba {
     });
     this.config = new ConfigManager(config);
     this.events = new EventManager(this);
-    this.redis = new RedisManager(this);
     this.tasks = new TaskManager(this);
     this.http = new HttpClient();
     this.rss = new RssEmitter();
+
+    if (config.redis) {
+      this.redis = new RedisManager(this);
+    }
   }
 
   getEmbed() {
@@ -93,17 +96,19 @@ export class Aoba {
     this.logger.info('Loaded all documentation classes! Now connecting to MongoDB...');
     await this.database.connect();
 
-    this.logger.info('Connected to MongoDB! Now connecting to Redis...');
-    await this.redis.connect();
+    if (this.redis) {
+      this.logger.info('Connected to MongoDB! Now connecting to Redis...');
+      await this.redis.connect();
+    }
 
-    this.logger.info('Connected to Redis! Now connecting to Discord...');
+    this.logger.info(`Connected to ${this.redis ? 'Redis' : 'MongoDB'}! Now connecting to Discord...`);
     await this.client.connect();
   }
 
   async dispose() {
     this.logger.warn('Disposing connections...');
     await this.database.dispose();
-    this.redis.dispose();
+    if (this.redis) this.redis.dispose();
     this.client.disconnect({ reconnect: false });
     await new Promise(resolve => setTimeout(resolve, 2000));
 

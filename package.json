@@ -7,6 +7,7 @@
   "repository": "https://github.com/nowoel/Aoba",
   "author": "Noel",
   "scripts": {
+    "build:watch": "yarn lint && yarn test && tsc -w",
     "move:unix": "cp src/config.json build/config.json",
     "move:win": "copy src/config.json build/config.json",
     "compile": "tsc && echo \"Compiled TypeScript\"",

@@ -1,4 +1,5 @@
-import { Aoba, CommandContext } from '.';
+import { Aoba, CommandContext, SubcommandDefinition } from '..';
+import { Collection } from '@augu/immutable';
 import { Constants } from '../../util';
 
 interface CommandInfo {
@@ -67,6 +68,11 @@ interface CommandDisabled {
 
 export abstract class Command {
   /**
+   * The subcommands registered from the `Subcommand` decorator
+   */
+  public subcommands: Collection<SubcommandDefinition>;
+
+  /**
    * The information used for the command
    */
   public info: CommandInfo;
@@ -81,6 +87,7 @@ export abstract class Command {
    * @param info The information
    */
   constructor(info: CommandInfo) {
+    this.subcommands = new Collection();
     this.info = info;
   }
 
