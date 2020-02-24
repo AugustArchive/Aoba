@@ -48,9 +48,17 @@ export default class HelpCommand extends Command {
         const command = cmd[0];
         const embed = this.bot.getEmbed();
         embed.setDescription(stripIndents`
-          > __**Command \`${command.name}\`**__
+          __**Command \`${command.signature}\`**__
           > **${command.description}**
         `);
+
+        embed
+          .addField('Module', command.module, true)
+          .addField('Disabled', command.disabled.is ? `Yes (**${command.disabled.reason}**)` : 'No')
+          .addField('Guild Only', command.guildOnly ? 'Yes' : 'No')
+          .addField('Owner Only', command.ownerOnly ? 'Yes' : 'No')
+          .addField('User Permissions Required', command.userPermissions.length ? command.userPermissions.map(s => s).join(' | ') : 'None')
+          .addField('Bot Permissions Required', command.botPermissions.length ? command.botPermissions.map(s => s).join(' | ') : 'None');
 
         return void ctx.embed(embed);
       }

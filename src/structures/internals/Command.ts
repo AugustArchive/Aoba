@@ -66,6 +66,10 @@ interface CommandDisabled {
   is: boolean;
 }
 
+interface CommandStatic {
+  [x: string]: any;
+}
+
 export abstract class Command {
   /**
    * A list of user permissions to use this command
@@ -144,6 +148,7 @@ export abstract class Command {
    */
   inject(bot: Aoba) {
     this.bot = bot;
+    Object.freeze(this.static); // Make the "static" object immutable when the bot instance is injected
   }
 
   /**
@@ -151,6 +156,11 @@ export abstract class Command {
    */
   get signature() {
     return this.usage === '' ? `aoba ${this.name} ${this.usage}` : `aoba ${this.name}`;
+  }
+
+  /** Returns an immutable object */
+  get static(): CommandStatic {
+    return {};
   }
 
   /**

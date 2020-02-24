@@ -61,12 +61,18 @@ export default class CommandManager extends Collection<Command> {
 
       this.logger.info(`Found ${files.length} files in module ${mod}`);
       for (const file of files) {
-        const instance = await import(getCommandPath(mod, file));
-        const command: Command = instance.default ? new instance.default() : new instance();
-        if (command.disabled.is) this.logger.warn(`Command ${command.name} is disabled from running for ${command.disabled.reason}`);
-
-        this.set(command.name, command);
-        this.logger.info(`Registered command ${command.name}`);
+        try {
+          const instance = await import(getCommandPath(mod, file));
+          const command: Command = instance.default ? new instance.default() : new instance();
+          if (command.disabled.is) this.logger.warn(`Command ${command.name} is disabled from running for ${command.disabled.reason}`);
+  
+          this.set(command.name, command);
+          this.logger.info(`Registered command ${command.name}`);
+        }
+        catch(ex) {
+          this.logger.error(`Unable to build command ${file}:`, ex);
+          continue;
+        }
       }
     }
   }
