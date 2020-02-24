@@ -13,9 +13,9 @@ export default class CommandStatisticsManager {
    * Increments the amount of commands that were executed
    */
   inc(cmd: Command) {
-    if (!this.commandUsages.hasOwnProperty(cmd.info.name)) this.commandUsages[cmd.info.name] = 0;
+    if (!this.commandUsages.hasOwnProperty(cmd.name)) this.commandUsages[cmd.name] = 0;
 
     this.commandsExecuted++;
-    this.commandUsages[cmd.info.name]++;
+    this.commandUsages[cmd.name]++;
   }
 }

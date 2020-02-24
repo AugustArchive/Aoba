@@ -28,11 +28,11 @@ export class ArgumentParser {
   }
 
   /**
-   * Check if the argument is in the array
+   * Check if the argument is empty
    * @param i The argument index
    */
-  has(i: number) {
-    return this.args[i] === null;
+  empty(i: number) {
+    return !this.args[i];
   }
 
   /**

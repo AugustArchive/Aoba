@@ -3,7 +3,7 @@ import { Aoba, Task } from '../structures';
 export default class GatewayPingTask extends Task {
   constructor(bot: Aoba) {
     super(bot, {
-      interval: 10000,
+      interval: 30000,
       name: 'gateway.ping'
     });
   }

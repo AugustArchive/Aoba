@@ -1,4 +1,4 @@
-import { Aoba, Logger, Command, CommandContext, ArgumentParser } from '..';
+import { Aoba, Logger, Command, CommandContext } from '..';
 import { Message, TextChannel } from 'eris';
 import { stripIndents } from 'common-tags';
 import { Constants } from '../../util';
@@ -18,13 +18,12 @@ class CommandInvocation {
   canInvoke() {
     const owners = this.context.bot.config.get<string[]>('owners')!;
     
-    if (this.command.info.guildOnly && [1, 3, 4].includes(this.context.channel.type)) return `You need to be in a text channel to run the \`${this.command.info.name}\` command.`;
-    if (this.command.info.ownerOnly && !owners.includes(this.context.author.id)) return `You must need to be a developer to run the \`${this.command.info.name}\` command.`;
+    if (this.command.guildOnly && [1, 3, 4].includes(this.context.channel.type)) return `You need to be in a text channel to run the \`${this.command.name}\` command.`;
+    if (this.command.ownerOnly && !owners.includes(this.context.author.id)) return `You must need to be a developer to run the \`${this.command.name}\` command.`;
     if (
-      this.command.info.disabled && 
-      this.command.info.disabled.is && 
+      this.command.disabled.is && 
       !this.oneTime
-    ) return `Command \`${this.command.info.name}\` is currently globally disabled because \`${this.command.info.disabled.reason}\``;
+    ) return `Command \`${this.command.name}\` is currently globally disabled because \`${this.command.disabled.reason}\``;
 
     return null;
   }
@@ -90,43 +89,33 @@ export default class CommandService {
     const args = msg.content.slice(prefix.length).trim().split(/ +/g);
     const ctx = new CommandContext(this.bot, msg, args);
     const invocation = this.getCommand(ctx);
-    let run!: (ctx: CommandContext) => Promise<void>;
 
     if (invocation) {
       const invoked = invocation.canInvoke();
       if (typeof invoked === 'string') {
         const embed = this.bot.getEmbed()
-          .setTitle(`Unable to run ${invocation.command.info.name} command`)
+          .setTitle(`Unable to run ${invocation.command.name} command`)
           .setDescription(`**${invoked}**`)
           .build();
 
         return ctx.embed(embed);
       }
 
-      run = invocation.command.run;
-      if (ctx.args.raw.length) {
-        for (const arg of ctx.args.raw) {
-          if (!invocation.command.subcommands.empty && invocation.command.subcommands.find(sub => sub.name === arg)) {
-            run = invocation.command.subcommands.find(s => s.name === arg)!.exec;
-          }
-        }
-      }
-
       invocation.command.inject(this.bot);
       try {
-        await run.apply(invocation.command, [ctx]);
+        await invocation.command.run(ctx);
 
         this.bot.prometheus.commandsExecuted.inc();
         this.bot.statistics.inc(invocation.command);
-        this.logger.info(`Ran command ${invocation.command.info.name} for ${ctx.author.username} in ${ctx.guild!.name}`);
+        this.logger.info(`Ran command ${invocation.command.name} for ${ctx.author.username} in ${ctx.guild!.name}`);
       }
       catch(ex) {
-        this.bot.logger.error(`Unable to run the ${invocation.command.info.name} command:`, ex);
+        this.bot.logger.error(`Unable to run the ${invocation.command.name} command:`, ex);
 
         const embed = this.bot.getEmbed()
-          .setTitle(`Unable to run ${invocation.command.info.name} command`)
+          .setTitle(`Unable to run ${invocation.command.name} command`)
           .setDescription(stripIndents`
-            aaaaaa, I am so sorry, **${ctx.author.username}!**
+            aaaaaa, I am so sorry, **${ctx.author.username}**!
 
             Here is the report:
             \`\`\`js
@@ -146,7 +135,7 @@ export default class CommandService {
 
     const name = ctx.args.raw.shift()!;
     const cmd = this.bot.commands.find(x =>
-      x.info.name === name || (x.info.aliases || []).includes(name)  
+      x.name === name || x.aliases.includes(name)  
     );
 
     if (cmd) return new CommandInvocation(cmd, ctx, false);

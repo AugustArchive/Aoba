@@ -1,4 +1,4 @@
-import { Aoba, CommandContext, SubcommandDefinition } from '..';
+import { Aoba, CommandContext } from '..';
 import { Collection } from '@augu/immutable';
 import { Constants } from '../../util';
 
@@ -68,14 +68,54 @@ interface CommandDisabled {
 
 export abstract class Command {
   /**
-   * The subcommands registered from the `Subcommand` decorator
+   * A list of user permissions to use this command
    */
-  public subcommands: Collection<SubcommandDefinition>;
+  public userPermissions: string[];
 
   /**
-   * The information used for the command
+   * A list of the bot (Aoba)'s permissions to use this command
    */
-  public info: CommandInfo;
+  public botPermissions: string[];
+
+  /**
+   * The command's description
+   */
+  public description: string;
+
+  /**
+   * If the command should be ran in a guild
+   */
+  public guildOnly: boolean;
+
+  /**
+   * If the command should be ran by the owners
+   */
+  public ownerOnly: boolean;
+
+  /**
+   * If the command is disabled
+   */
+  public disabled: CommandDisabled;
+
+  /**
+   * Any other names for the command
+   */
+  public aliases: string[];
+
+  /**
+   * The module name
+   */
+  public module: Constants.Module;
+
+  /**
+   * The usage of the command (use Command#signature to get the full format)
+   */
+  public usage: string;
+
+  /**
+   * The command's name
+   */
+  public name: string;
 
   /**
    * The bot instance itself
@@ -87,8 +127,16 @@ export abstract class Command {
    * @param info The information
    */
   constructor(info: CommandInfo) {
-    this.subcommands = new Collection();
-    this.info = info;
+    this.userPermissions = info.userPermissions || [];
+    this.botPermissions = info.botPermissions || [];
+    this.description = info.description;
+    this.guildOnly = info.guildOnly || false;
+    this.ownerOnly = info.ownerOnly || false;
+    this.disabled = info.disabled || { is: false, reason: 'No reason provided.' };
+    this.aliases = info.aliases || [];
+    this.module = info.module;
+    this.usage = info.usage || '';
+    this.name = info.name;
   }
 
   /**
@@ -102,7 +150,7 @@ export abstract class Command {
    * The command's signature
    */
   get signature() {
-    return this.info.usage !== '' ? `aoba ${this.info.name} ${this.info.usage}` : `aoba ${this.info.name}`;
+    return this.usage === '' ? `aoba ${this.name} ${this.usage}` : `aoba ${this.name}`;
   }
 
   /**
