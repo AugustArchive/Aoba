@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@augu/immutable": "0.1.6",
-    "@augu/sysinfo": "0.1.1",
+    "@augu/sysinfo": "0.2.0",
     "cheerio": "1.0.0-rc.3",
     "common-tags": "1.8.0",
     "eris": "0.11.2",
