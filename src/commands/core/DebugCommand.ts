@@ -29,13 +29,13 @@ export default class DebugCommand extends Command {
     const embed = this.bot.getEmbed()
       .setTitle('Debug Panel')
       .setDescription(stripIndents`
-        \`\`\`apache
-        CPU Count ${workstation !== null ? '   ' : ' '}=> ${cpus}
-        CPU Info  ${workstation !== null ? '   ' : ' '}=> ${cpuInfo.firstModel}
-        CPU Usage ${workstation !== null ? '   ' : ' '}=> ${cpuUsage}%
-        Platform  ${workstation !== null ? '   ' : ' '}=> ${platform}
-        ${workstation !== null ? `Desktop Name => ${workstation.desktopName} (${workstation.since})` : ''}
-        ${services.length ? `Services     => ${services.length} Running` : ''}
+        \`\`\`prolog
+          CPU Count ${workstation !== null ? '   ' : ' '}=> ${cpus}
+          CPU Info  ${workstation !== null ? '   ' : ' '}=> ${cpuInfo.firstModel}
+          CPU Usage ${workstation !== null ? '   ' : ' '}=> ${cpuUsage}%
+          Platform  ${workstation !== null ? '   ' : ' '}=> ${platform}
+          ${workstation !== null ? `Desktop Name => ${workstation.desktopName} (${workstation.since})` : ''}
+          ${services.length ? `Services     => ${services.length} Running` : ''}
         \`\`\`
       `);
 
