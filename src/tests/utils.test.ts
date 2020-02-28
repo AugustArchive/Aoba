@@ -18,7 +18,7 @@ describe('Utilities', () => {
 
   describe('Utilities#includesMarker', () => {
     const text = 'hi im a ${at}';
-    it('should include marker', () =>
+    it('should include "${at}"', () =>
       expect(utils.includesMarker(text)).toStrictEqual(true)
     );
   });

@@ -167,5 +167,5 @@ export abstract class Command {
    * Runs the command
    * @param ctx The command context
    */
-  public abstract run(ctx: CommandContext): Promise<void>;
+  public abstract run(ctx: CommandContext): Promise<any>;
 }

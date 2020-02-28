@@ -43,7 +43,11 @@ export default class HttpRequest {
     if (typeof url !== 'string') throw new SyntaxError(`HttpRequest#url requires the URL to be a string, gotten ${typeof url}`);
 
     this.sendDataAs = options.data ? typeof options.data === 'string' ? 'text' : options.data instanceof Object ? 'json' : undefined : undefined;
-    this.options = options;
+    this.options = Object.assign<HttpRequestOptions, HttpRequestOptions>({
+      headers: {},
+      timeout: 30000,
+      data: null
+    }, options);
     this.method = method;
     this.url = new URL(url);
   }
@@ -130,8 +134,8 @@ export default class HttpRequest {
    */
   execute() {
     return new Promise<Response>((resolve, reject) => {
+      if (!this.options.headers!['User-Agent']) this.options.headers!['User-Agent'] = `Aoba/DiscordBot (v${Constants.version}, https://github.com/nowoel/Aoba)`;
       if (this.options.data) {
-        if (!this.options.headers!['User-Agent']) this.options.headers!['User-Agent'] = `Aoba/DiscordBot (v${Constants.version}, https://github.com/nowoel/Aoba)`;
         if (
           this.sendDataAs === 'json' ||
           this.options.data instanceof Object &&
