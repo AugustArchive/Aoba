@@ -51,20 +51,17 @@ export default class SettingsCommand extends Command {
     const keys = [
       'providers.nintendo.channelID',
       'providers.picarto.channelID',
-      'provider.picarto.channels',
-      'provider.picarto.events',
+      'providers.picarto.channels',
       'providers.youtube.channelID',
       'providers.youtube.channels',
-      'providers.youtube.events',
       'providers.twitch.channelID',
       'providers.twitch.channels',
-      'providers.twitch.events',
       'providers.mixer.channelID',
-      'providers.mixer.channels',
-      'providers.mixer.events',
+      'providers.mixer.channels'
     ];
 
     const key = ctx.args.get(0);
+    const settings = await this.bot.database.getGuild(ctx.guild!.id);
 
     switch (key) {
       case 'providers.nintendo.channelID': {
@@ -101,7 +98,292 @@ export default class SettingsCommand extends Command {
         if (collected.content === 'no') return message.edit(`O-ok **${ctx.author.username}**, I will not set the channel`);
       } break;
 
+      case 'providers.picarto.channelID': {
+        if (ctx.args.empty(1)) return ctx.send('S-sorry, but you\'ll need to set a channel id, mention, or name!');
+
+        const channelID = ctx.args.get(1);
+        const channel = await this.bot.rest.getChannel(channelID, ctx.guild!).catch(ex => ctx.send(ex));
+
+        const message = await ctx.send(stripIndents`
+          :pencil2: **| B-before I do anything, are you sure you do this?**
+          > Type \`yes\` to add <#${channel.id}> as a channel to send updates on when Picarto.tv users stream.
+          > Type \`no\` to opt-out of this menu and not do anything.
+
+          You have a minute to decide, I-I'm doing this, so I won't do a-anything s-s-stupid...
+        `);
+
+        const collected = await ctx.collector.awaitMessage(msg => msg.author.id === ctx.author.id && ['yes', 'no'].includes(msg.content), {
+          channelID: ctx.channel.id,
+          userID: ctx.author.id,
+          timeout: 60
+        });
+
+        if (!collected.content) return message.edit(`O-ok **${ctx.author.username}**, I have opted you out of the menu.`);
+        if (collected.content === 'yes') {
+          await this.bot.database.updateGuild(ctx.guild!.id, {
+            $set: {
+              'modifiedAt': Date.now(),
+              'providers.picarto.channelID': channel.id
+            }
+          });
+
+          return message.edit(`I have set the channel to receive Picarto.tv news in <#${channel.id}>!`);
+        }
+        if (collected.content === 'no') return message.edit(`O-ok **${ctx.author.username}**, I will not set the channel`);
+      } break;
+
+      case 'providers.picarto.channels': {
+        if (ctx.args.empty(1)) return ctx.send('S-sorry, but you\'ll need to provide a list (example: `x y z`');
+
+        const list = ctx.args.slice(1).raw;
+
+        const message = await ctx.send(stripIndents`
+          :pencil2: **| B-before I do anything, are you sure you do this?**
+          > Type \`yes\` to add ${list.length} channels to opt in notifications?
+          > Type \`no\` to opt-out of this menu and not do anything.
+
+          You have a minute to decide, I-I'm doing this, so I won't do a-anything s-s-stupid...
+        `);
+
+        const collected = await ctx.collector.awaitMessage(msg => msg.author.id === ctx.author.id && ['yes', 'no'].includes(msg.content), {
+          channelID: ctx.channel.id,
+          userID: ctx.author.id,
+          timeout: 60
+        });
+
+        if (!collected.content) return message.edit(`O-ok **${ctx.author.username}**, I have opted you out of the menu.`);
+        if (collected.content === 'yes') {
+          const doc = {
+            'modifiedAt': Date.now(),
+            'providers.picarto.channels': settings.providers.picarto.channels.length ? [...settings.providers.picarto.channels, ...list] : list
+          };
+
+          if (!settings.providers.picarto.enabled) doc['providers.picarto.enabled'] = true;
+          await this.bot.database.updateGuild(ctx.guild!.id, {
+            $set: doc
+          });
+
+          return message.edit(`You have set ${list.length} channels to receive notifications from, to enable events, do \`aoba settings enable providers.picarto.events\``);
+        }
+        if (collected.content === 'no') return message.edit(`O-ok **${ctx.author.username}**, I will not set the channel`);
+      } break;
+
+      case 'providers.picarto.channelID': {
+        if (ctx.args.empty(1)) return ctx.send('S-sorry, but you\'ll need to set a channel id, mention, or name!');
+
+        const channelID = ctx.args.get(1);
+        const channel = await this.bot.rest.getChannel(channelID, ctx.guild!).catch(ex => ctx.send(ex));
+
+        const message = await ctx.send(stripIndents`
+          :pencil2: **| B-before I do anything, are you sure you do this?**
+          > Type \`yes\` to add <#${channel.id}> as a channel to send updates on when YouTube channels do stuff.
+          > Type \`no\` to opt-out of this menu and not do anything.
+
+          You have a minute to decide, I-I'm doing this, so I won't do a-anything s-s-stupid...
+        `);
+
+        const collected = await ctx.collector.awaitMessage(msg => msg.author.id === ctx.author.id && ['yes', 'no'].includes(msg.content), {
+          channelID: ctx.channel.id,
+          userID: ctx.author.id,
+          timeout: 60
+        });
+
+        if (!collected.content) return message.edit(`O-ok **${ctx.author.username}**, I have opted you out of the menu.`);
+        if (collected.content === 'yes') {
+          await this.bot.database.updateGuild(ctx.guild!.id, {
+            $set: {
+              'modifiedAt': Date.now(),
+              'providers.youtube.channelID': channel.id
+            }
+          });
+
+          return message.edit(`I have set the channel to receive YouTube news in <#${channel.id}>!`);
+        }
+        if (collected.content === 'no') return message.edit(`O-ok **${ctx.author.username}**, I will not set the channel`);
+      } break;
+
+      case 'providers.youtube.channels': {
+        if (ctx.args.empty(1)) return ctx.send('S-sorry, but you\'ll need to provide a list (example: `x y z`');
+
+        const list = ctx.args.slice(1).raw;
+
+        const message = await ctx.send(stripIndents`
+          :pencil2: **| B-before I do anything, are you sure you do this?**
+          > Type \`yes\` to add ${list.length} channels to opt in notifications?
+          > Type \`no\` to opt-out of this menu and not do anything.
+
+          You have a minute to decide, I-I'm doing this, so I won't do a-anything s-s-stupid...
+        `);
+
+        const collected = await ctx.collector.awaitMessage(msg => msg.author.id === ctx.author.id && ['yes', 'no'].includes(msg.content), {
+          channelID: ctx.channel.id,
+          userID: ctx.author.id,
+          timeout: 60
+        });
+
+        if (!collected.content) return message.edit(`O-ok **${ctx.author.username}**, I have opted you out of the menu.`);
+        if (collected.content === 'yes') {
+          const doc = {
+            'modifiedAt': Date.now(),
+            'providers.picarto.channels': settings.providers.youtube.channels.length ? [...settings.providers.youtube.channels, ...list] : list
+          };
+
+          if (!settings.providers.youtube.enabled) doc['providers.youtube.enabled'] = true;
+          await this.bot.database.updateGuild(ctx.guild!.id, {
+            $set: doc
+          });
+
+          return message.edit(`You have set ${list.length} channels to receive notifications from, to enable events, do \`aoba settings enable providers.picarto.events\``);
+        }
+        if (collected.content === 'no') return message.edit(`O-ok **${ctx.author.username}**, I will not set the channel`);
+      } break;
+
+      case 'providers.twitch.channelID': {
+        if (ctx.args.empty(1)) return ctx.send('S-sorry, but you\'ll need to set a channel id, mention, or name!');
+
+        const channelID = ctx.args.get(1);
+        const channel = await this.bot.rest.getChannel(channelID, ctx.guild!).catch(ex => ctx.send(ex));
+
+        const message = await ctx.send(stripIndents`
+          :pencil2: **| B-before I do anything, are you sure you do this?**
+          > Type \`yes\` to add <#${channel.id}> as a channel to send updates on when Twitch users stream.
+          > Type \`no\` to opt-out of this menu and not do anything.
+
+          You have a minute to decide, I-I'm doing this, so I won't do a-anything s-s-stupid...
+        `);
+
+        const collected = await ctx.collector.awaitMessage(msg => msg.author.id === ctx.author.id && ['yes', 'no'].includes(msg.content), {
+          channelID: ctx.channel.id,
+          userID: ctx.author.id,
+          timeout: 60
+        });
+
+        if (!collected.content) return message.edit(`O-ok **${ctx.author.username}**, I have opted you out of the menu.`);
+        if (collected.content === 'yes') {
+          await this.bot.database.updateGuild(ctx.guild!.id, {
+            $set: {
+              'modifiedAt': Date.now(),
+              'providers.twitch.channelID': channel.id
+            }
+          });
+
+          return message.edit(`I have set the channel to receive Twitch news in <#${channel.id}>!`);
+        }
+        if (collected.content === 'no') return message.edit(`O-ok **${ctx.author.username}**, I will not set the channel`);
+      } break;
+
+      case 'providers.twitch.channels': {
+        if (ctx.args.empty(1)) return ctx.send('S-sorry, but you\'ll need to provide a list (example: `x y z`');
+
+        const list = ctx.args.slice(1).raw;
+
+        const message = await ctx.send(stripIndents`
+          :pencil2: **| B-before I do anything, are you sure you do this?**
+          > Type \`yes\` to add ${list.length} channels to opt in notifications?
+          > Type \`no\` to opt-out of this menu and not do anything.
+
+          You have a minute to decide, I-I'm doing this, so I won't do a-anything s-s-stupid...
+        `);
+
+        const collected = await ctx.collector.awaitMessage(msg => msg.author.id === ctx.author.id && ['yes', 'no'].includes(msg.content), {
+          channelID: ctx.channel.id,
+          userID: ctx.author.id,
+          timeout: 60
+        });
+
+        if (!collected.content) return message.edit(`O-ok **${ctx.author.username}**, I have opted you out of the menu.`);
+        if (collected.content === 'yes') {
+          const doc = {
+            'modifiedAt': Date.now(),
+            'providers.twitch.channels': settings.providers.twitch.channels.length ? [...settings.providers.twitch.channels, ...list] : list
+          };
+
+          if (!settings.providers.twitch.enabled) doc['providers.twitch.enabled'] = true;
+          await this.bot.database.updateGuild(ctx.guild!.id, {
+            $set: doc
+          });
+
+          return message.edit(`You have set ${list.length} channels to receive notifications from, to enable events, do \`aoba settings enable providers.twitch.events\``);
+        }
+        if (collected.content === 'no') return message.edit(`O-ok **${ctx.author.username}**, I will not set the channel`);
+      } break;
+
+      case 'providers.mixer.channelID': {
+        if (ctx.args.empty(1)) return ctx.send('S-sorry, but you\'ll need to set a channel id, mention, or name!');
+
+        const channelID = ctx.args.get(1);
+        const channel = await this.bot.rest.getChannel(channelID, ctx.guild!).catch(ex => ctx.send(ex));
+
+        const message = await ctx.send(stripIndents`
+          :pencil2: **| B-before I do anything, are you sure you do this?**
+          > Type \`yes\` to add <#${channel.id}> as a channel to send updates on when Mixer users stream.
+          > Type \`no\` to opt-out of this menu and not do anything.
+
+          You have a minute to decide, I-I'm doing this, so I won't do a-anything s-s-stupid...
+        `);
+
+        const collected = await ctx.collector.awaitMessage(msg => msg.author.id === ctx.author.id && ['yes', 'no'].includes(msg.content), {
+          channelID: ctx.channel.id,
+          userID: ctx.author.id,
+          timeout: 60
+        });
+
+        if (!collected.content) return message.edit(`O-ok **${ctx.author.username}**, I have opted you out of the menu.`);
+        if (collected.content === 'yes') {
+          await this.bot.database.updateGuild(ctx.guild!.id, {
+            $set: {
+              'modifiedAt': Date.now(),
+              'providers.mixer.channelID': channel.id
+            }
+          });
+
+          return message.edit(`I have set the channel to receive Mixer news in <#${channel.id}>!`);
+        }
+        if (collected.content === 'no') return message.edit(`O-ok **${ctx.author.username}**, I will not set the channel`);
+      } break;
+
+      case 'providers.mixer.channels': {
+        if (ctx.args.empty(1)) return ctx.send('S-sorry, but you\'ll need to provide a list (example: `x y z`');
+
+        const list = ctx.args.slice(1).raw;
+
+        const message = await ctx.send(stripIndents`
+          :pencil2: **| B-before I do anything, are you sure you do this?**
+          > Type \`yes\` to add ${list.length} channels to opt in notifications?
+          > Type \`no\` to opt-out of this menu and not do anything.
+
+          You have a minute to decide, I-I'm doing this, so I won't do a-anything s-s-stupid...
+        `);
+
+        const collected = await ctx.collector.awaitMessage(msg => msg.author.id === ctx.author.id && ['yes', 'no'].includes(msg.content), {
+          channelID: ctx.channel.id,
+          userID: ctx.author.id,
+          timeout: 60
+        });
+
+        if (!collected.content) return message.edit(`O-ok **${ctx.author.username}**, I have opted you out of the menu.`);
+        if (collected.content === 'yes') {
+          const doc = {
+            'modifiedAt': Date.now(),
+            'providers.mixer.channels': settings.providers.mixer.channels.length ? [...settings.providers.mixer.channels, ...list] : list
+          };
+
+          if (!settings.providers.mixer.enabled) doc['providers.picarto.enabled'] = true;
+          await this.bot.database.updateGuild(ctx.guild!.id, {
+            $set: doc
+          });
+
+          return message.edit(`You have set ${list.length} channels to receive notifications from, to enable events, do \`aoba settings enable providers.mixer.events\``);
+        }
+        if (collected.content === 'no') return message.edit(`O-ok **${ctx.author.username}**, I will not set the channel`);
+      } break;
+
       default: return ctx.send(key === undefined ? `Missing key. (${keys.join(' | ')})` : `Invalid key **${key}** (${keys.join(' | ')})`);
     }
+  }
+
+  @Subcommand('enable', 'Enable providers or events to send')
+  enable(ctx: CommandContext) {
+    
   }
 }
