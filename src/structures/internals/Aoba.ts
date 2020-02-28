@@ -2,7 +2,6 @@ import { EmbedBuilder, HttpClient, Logger, RssFeedEmitter as RssEmitter } from '
 import { Client as DiscordClient } from 'eris';
 import CommandStatisticsManager from '../managers/CommandStatsManager';
 import ServiceProviderManager from '../managers/ServiceProviderManager';
-import DocumentationManager from '../managers/DocumentationManager';
 import PrometheusManager from '../managers/PrometheusManager';
 import DatabaseManager from '../managers/DatabaseManager';
 import CommandManager from '../managers/CommandManager';
@@ -43,7 +42,6 @@ export interface Config {
 }
 
 export class Aoba {
-  public documentation: DocumentationManager;
   public statistics: CommandStatisticsManager;
   public prometheus: PrometheusManager;
   public providers: ServiceProviderManager;
@@ -61,7 +59,6 @@ export class Aoba {
   public rss: RssEmitter;
 
   constructor(config: Config) {
-    this.documentation = new DocumentationManager(this);
     this.statistics = new CommandStatisticsManager();
     this.prometheus = new PrometheusManager();
     this.providers = new ServiceProviderManager(this);
@@ -112,10 +109,7 @@ export class Aoba {
     this.logger.info('Loaded all tasks! Now building all service providers...');
     await this.providers.configure();
 
-    this.logger.info('Loaded all service providers! Now building all documentation classes...');
-    await this.documentation.configure();
-
-    this.logger.info('Loaded all documentation classes! Now connecting to MongoDB...');
+    this.logger.info('Loaded all service providers! Now connecting to MongoDB...');
     await this.database.connect();
 
     this.logger.info('Connected to MongoDB! Now connecting to Redis...');

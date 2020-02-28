@@ -384,6 +384,10 @@ export default class SettingsCommand extends Command {
 
   @Subcommand('enable', 'Enable providers or events to send')
   enable(ctx: CommandContext) {
-    
+    const allKeys = [
+      'providers.*',
+      'providers.picarto',
+      'providers.picarto.events.*'
+    ];
   }
 }

@@ -148,12 +148,8 @@ export default class CommandService {
       const now = Date.now();
       const ratelimit = this.ratelimits.get(invocation.command.name)!;
 
-      if (!ratelimit.has(ctx.author.id)) {
-        ratelimit.set(ctx.author.id, now);
-        setTimeout(() => ratelimit.delete(ctx.author.id), amount);
-      }
-      else {
-        const time = ratelimit.get(ctx.author.id)!;
+      if (ratelimit.has(ctx.author.id)) {
+        const time = ratelimit.get(ctx.author.id)! + amount;
         if (now < time) {
           const left = (time - now) / 1000;
           const embed = this.bot.getEmbed();
@@ -161,12 +157,12 @@ export default class CommandService {
             .setAuthor(`| Command "${invocation.command.name}" is on cooldown...`, undefined, ctx.author.dynamicAvatarURL('png', 1024))
             .setDescription(`S-sorry, I've put command **${invocation.command.name}** on cooldown for **${left.toFixed()} second${left > 1 ? 's' : ''}**`);
             
-          ctx.embed(embed);
+          return ctx.embed(embed);
         }
-
-        ratelimit.set(ctx.author.id, now);
-        setTimeout(() => ratelimit.delete(ctx.author.id), amount);
       }
+
+      ratelimit.set(ctx.author.id, now);
+      setTimeout(() => ratelimit.delete(ctx.author.id), amount);
 
       invocation.command.inject(this.bot);
       try {
