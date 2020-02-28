@@ -1,4 +1,4 @@
-import { Aoba, CommandContext } from '..';
+import { Aoba, CommandContext, SubcommandDefinition } from '..';
 import { Collection } from '@augu/immutable';
 import { Constants } from '../../util';
 
@@ -82,6 +82,11 @@ export abstract class Command {
   public botPermissions: string[];
 
   /**
+   * A list of avaliable subcommands from the `Subcommand` decorator
+   */
+  public subcommands: Collection<SubcommandDefinition>;
+
+  /**
    * The command's description
    */
   public description: string;
@@ -133,6 +138,7 @@ export abstract class Command {
   constructor(info: CommandInfo) {
     this.userPermissions = info.userPermissions || [];
     this.botPermissions = info.botPermissions || [];
+    this.subcommands = new Collection();
     this.description = info.description;
     this.guildOnly = info.guildOnly || false;
     this.ownerOnly = info.ownerOnly || false;

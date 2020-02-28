@@ -1,4 +1,4 @@
-import { CommandContext, Command } from '../../structures';
+import { CommandContext, Command, Cooldown } from '../../structures';
 import { stripIndents } from 'common-tags';
 import { Constants } from '../../util';
 
@@ -12,6 +12,7 @@ export default class InviteCommand extends Command {
     });
   }
 
+  @Cooldown(5000)
   async run(ctx: CommandContext) {
     const invite = `https://discordapp.com/oauth2/authorize?client_id=${this.bot.client.user.id}&scope=bot`;
     const embed = this.bot.getEmbed()

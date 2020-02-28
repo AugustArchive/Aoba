@@ -1,4 +1,4 @@
-import { Command, CommandContext } from '../../structures';
+import { Command, CommandContext, Cooldown } from '../../structures';
 import { Constants } from '../../util';
 
 export default class PingCommand extends Command {
@@ -17,6 +17,7 @@ export default class PingCommand extends Command {
     };
   }
 
+  @Cooldown(5000)
   async run(ctx: CommandContext) {
     const msg = await ctx.send(':ping_pong: **| W-what? F-fine, I\'ll get it for you~**');
 

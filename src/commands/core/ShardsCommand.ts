@@ -1,4 +1,4 @@
-import { CommandContext, Command } from '../../structures';
+import { CommandContext, Command, Cooldown } from '../../structures';
 import { Module } from '../../util/Constants';
 
 export default class ShardsCommand extends Command {
@@ -11,6 +11,7 @@ export default class ShardsCommand extends Command {
     });
   }
 
+  @Cooldown(2000)
   async run(ctx: CommandContext) {
     const data: string[] = [];
     for (const shard of this.bot.client.shards.values()) {

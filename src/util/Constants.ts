@@ -14,6 +14,7 @@ export const server: string = 'https://discord.gg/yDnbEDH';
 export enum Module {
   Settings = 'Settings',
   Search = 'Search',
+  Other = 'other',
   Core = 'Core',
   Docs = 'Documentation'
 }

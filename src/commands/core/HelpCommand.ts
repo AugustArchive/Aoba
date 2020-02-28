@@ -1,4 +1,4 @@
-import { CommandContext, Command } from '../../structures';
+import { CommandContext, Command, Cooldown } from '../../structures';
 import { stripIndents } from 'common-tags';
 import { Constants } from '../../util';
 
@@ -12,6 +12,7 @@ export default class HelpCommand extends Command {
     });
   }
 
+  @Cooldown(3000)
   async run(ctx: CommandContext) {
     const settings = await this.bot.database.getGuild(ctx.guild!.id);
 

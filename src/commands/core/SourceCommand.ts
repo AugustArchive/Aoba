@@ -1,4 +1,4 @@
-import { CommandContext, Command } from '../../structures';
+import { CommandContext, Command, Cooldown } from '../../structures';
 import { stripIndents } from 'common-tags';
 import { dateformat } from '../../util';
 import { Module } from '../../util/Constants';
@@ -45,6 +45,7 @@ export default class SourceCommand extends Command {
     });
   }
 
+  @Cooldown(5000)
   async run(ctx: CommandContext) {
     const res = await this.bot.http.get('https://api.github.com/repos/nowoel/Aoba/commits').execute();
 

@@ -1,6 +1,7 @@
-import { Aoba, Logger, Command, CommandContext } from '..';
+import { Aoba, Logger, Command, CommandContext, getCooldownDefinitions } from '..';
 import { Message, TextChannel } from 'eris';
 import { stripIndents } from 'common-tags';
+import { Collection } from '@augu/immutable';
 import { Constants } from '../../util';
 
 // Partially stolen from Nino (edge branch)
@@ -31,6 +32,11 @@ class CommandInvocation {
 
 export default class CommandService {
   /**
+   * A list of ratelimits from a user
+   */
+  public ratelimits: Collection<Collection<number>>;
+
+  /**
    * The logger instance
    */
   private logger: Logger;
@@ -44,6 +50,7 @@ export default class CommandService {
    * Creates a new command service instance
    */
   constructor(bot: Aoba) {
+    this.ratelimits = new Collection();
     this.logger = new Logger();
     this.bot = bot;
   }
@@ -89,6 +96,8 @@ export default class CommandService {
     const args = msg.content.slice(prefix.length).trim().split(/ +/g);
     const ctx = new CommandContext(this.bot, msg, args);
     const invocation = this.getCommand(ctx);
+    let run!: (ctx: CommandContext) => Promise<void>;
+    let isSub = false;
 
     if (invocation) {
       const invoked = invocation.canInvoke();
@@ -101,9 +110,44 @@ export default class CommandService {
         return ctx.embed(embed);
       }
 
+      run = invocation.command.run;
+      if (ctx.args.raw.length) {
+        for (const arg of ctx.args.raw) {
+          if (!invocation.command.subcommands.empty && invocation.command.subcommands.find(sub => sub.name === arg)) {
+            run = invocation.command.subcommands.find(s => s.name === arg)!.exec;
+            isSub = true;
+          }
+        }
+      }
+
+      if (!this.ratelimits.has(invocation.command.name)) this.ratelimits.set(invocation.command.name, new Collection());
+      const amount = getCooldownDefinitions(invocation.command);
+      const now = Date.now();
+      const ratelimit = this.ratelimits.get(invocation.command.name)!;
+
+      if (!ratelimit.has(ctx.author.id)) {
+        ratelimit.set(ctx.author.id, now);
+        setTimeout(() => ratelimit.delete(ctx.author.id), amount);
+      }
+      else {
+        const time = ratelimit.get(ctx.author.id)!;
+        if (now < time) {
+          const left = (time - now) / 1000;
+          const embed = this.bot.getEmbed();
+          embed
+            .setAuthor(`| Command "${invocation.command.name}" is on cooldown...`, undefined, ctx.author.dynamicAvatarURL('png', 1024))
+            .setDescription(`S-sorry, I've put command **${invocation.command.name}** on cooldown for **${left.toFixed()} second${left > 1 ? 's' : ''}**`);
+            
+          ctx.embed(embed);
+        }
+
+        ratelimit.set(ctx.author.id, now);
+        setTimeout(() => ratelimit.delete(ctx.author.id), amount);
+      }
+
       invocation.command.inject(this.bot);
       try {
-        await invocation.command.run(ctx);
+        await run.apply(invocation.command, [ctx]);
 
         this.bot.prometheus.commandsExecuted.inc();
         this.bot.statistics.inc(invocation.command);
@@ -115,13 +159,11 @@ export default class CommandService {
         const embed = this.bot.getEmbed()
           .setTitle(`Unable to run ${invocation.command.name} command`)
           .setDescription(stripIndents`
-            aaaaaa, I am so sorry, **${ctx.author.username}**!
-
+            aaaaaa, I am so sorry, **${ctx.author.username}!**
             Here is the report:
             \`\`\`js
             ${ex.stack.split('\n')[0]}
             \`\`\`
-
             I-if it occurs again, report it to <@280158289667555328> in <${Constants.server}>
           `);
 

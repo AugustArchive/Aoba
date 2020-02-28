@@ -1,4 +1,4 @@
-import { CommandContext, Command } from '../../structures';
+import { CommandContext, Command, Cooldown } from '../../structures';
 import { stripIndents } from 'common-tags';
 import { Constants } from '../../util';
 import sys from '@augu/sysinfo';
@@ -13,6 +13,7 @@ export default class DebugCommand extends Command {
     });
   }
 
+  @Cooldown(3000)
   async run(ctx: CommandContext) {
     const cpus = sys.getCPUCount();
     const cpuInfo = sys.getCPUInfo();

@@ -7,6 +7,7 @@ import PrometheusManager from '../managers/PrometheusManager';
 import DatabaseManager from '../managers/DatabaseManager';
 import CommandManager from '../managers/CommandManager';
 import ConfigManager from '../managers/ConfigManager';
+import TwitchWebhook from 'twitch-webhook';
 import EventManager from '../managers/EventManager';
 import RedisManager from '../managers/RedisManager';
 import TaskManager from '../managers/TaskManager';
@@ -14,10 +15,19 @@ import TaskManager from '../managers/TaskManager';
 export interface Config {
   databaseUrl: string;
   environment: 'development' | 'production';
+  twitch: {
+    clientID: string;
+    callbackUrls: {
+      [x in 'development' | 'production']: string;
+    }
+  };
   discord: {
     token: string;
   };
-  redis?: {
+  ports: {
+    [x in 'twitch' | 'prometheus']: number;
+  };
+  redis: {
     host: string;
     port: number;
     db: number;
@@ -40,7 +50,8 @@ export class Aoba {
   public client: DiscordClient;
   public config: ConfigManager;
   public events: EventManager;
-  public redis!: RedisManager;
+  public twitch: TwitchWebhook;
+  public redis: RedisManager;
   public tasks: TaskManager;
   public http: HttpClient;
   public rss: RssEmitter;
@@ -53,6 +64,14 @@ export class Aoba {
     this.commands = new CommandManager(this);
     this.database = new DatabaseManager(config);
     this.logger = new Logger();
+    this.twitch = new TwitchWebhook({
+      client_id: config.twitch.clientID,
+      callback: config.twitch.callbackUrls[config.environment],
+      secret: true,
+      listen: {
+        port: config.ports.twitch
+      }
+    });
     this.client = new DiscordClient(config.discord.token, {
       disableEveryone: true,
       autoreconnect: true,
@@ -63,10 +82,7 @@ export class Aoba {
     this.tasks = new TaskManager(this);
     this.http = new HttpClient();
     this.rss = new RssEmitter();
-
-    if (config.redis) {
-      this.redis = new RedisManager(this);
-    }
+    this.redis = new RedisManager(this);
   }
 
   getEmbed() {
@@ -96,19 +112,17 @@ export class Aoba {
     this.logger.info('Loaded all documentation classes! Now connecting to MongoDB...');
     await this.database.connect();
 
-    if (this.redis) {
-      this.logger.info('Connected to MongoDB! Now connecting to Redis...');
-      await this.redis.connect();
-    }
+    this.logger.info('Connected to MongoDB! Now connecting to Redis...');
+    await this.redis.connect();
 
-    this.logger.info(`Connected to ${this.redis ? 'Redis' : 'MongoDB'}! Now connecting to Discord...`);
+    this.logger.info('Connected to Redis! Now connecting to Discord...');
     await this.client.connect();
   }
 
   async dispose() {
     this.logger.warn('Disposing connections...');
     await this.database.dispose();
-    if (this.redis) this.redis.dispose();
+    this.redis.dispose();
     this.client.disconnect({ reconnect: false });
     await new Promise(resolve => setTimeout(resolve, 2000));
 
