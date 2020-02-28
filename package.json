@@ -28,7 +28,8 @@
     "leeks.js": "0.0.8",
     "mongodb": "3.5.3",
     "prom-client": "11.5.3",
-    "puppeteer": "2.1.1"
+    "puppeteer": "2.1.1",
+    "twitch-webhook": "1.2.4"
   },
   "devDependencies": {
     "@augu/eslint-config": "1.2.0",
