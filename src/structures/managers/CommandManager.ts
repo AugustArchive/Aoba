@@ -67,10 +67,7 @@ export default class CommandManager extends Collection<Command> {
           if (command.disabled.is) this.logger.warn(`Command ${command.name} is disabled from running for ${command.disabled.reason}`);
   
           const subcommands = getSubcommandDefinitions(command);
-          if (!subcommands.length) {
-            this.logger.warn(`No subcommands were registered in ${command.name} command.`);
-            continue;
-          }
+          if (!subcommands.length) this.logger.warn(`No subcommands were registered in ${command.name} command.`);
   
           for (const sub of subcommands) {
             command.subcommands.set(sub.name, sub);

@@ -7,20 +7,29 @@ interface GuildModel {
       enabled: boolean;
       channelID: string | null;
     };
+    picarto: {
+      enabled: boolean;
+      channelID: string | null;
+      channels: string[];
+      events: string[];
+    };
     youtube: {
       enabled: boolean;
       channelID: string | null;
       channels: string[];
+      events: string[];
     };
     twitch: {
       enabled: boolean;
       channelID: string | null;
       channels: string[];
+      events: string[];
     };
     mixer: {
       enabled: boolean;
       channelID: string | null;
       channels: string[];
+      events: string[];
     };
   };
   blacklisted: {
@@ -29,6 +38,7 @@ interface GuildModel {
     time: number | false;
     is: boolean;
   };
+  modifiedAt: number;
   guildID: string;
   prefix: string;
 }
@@ -39,7 +49,8 @@ interface UserModel {
     reason: string | null;
     time: number | false;
     is: boolean;
-  }
+  };
+  modifiedAt: number;
   prefix: string;
   userID: string;
 }
@@ -135,6 +146,7 @@ export default class DatabaseManager {
     const model: GuildModel = {
       guildID: id,
       prefix: 'aoba ',
+      modifiedAt: Date.now(),
       providers: {
         nintendo: {
           channelID: null,
@@ -143,17 +155,26 @@ export default class DatabaseManager {
         youtube: {
           channelID: null,
           channels: [],
-          enabled: false
+          enabled: false,
+          events: []
         },
         twitch: {
           channelID: null,
           channels: [],
-          enabled: false
+          enabled: false,
+          events: []
         },
         mixer: {
           channelID: null,
           channels: [],
-          enabled: false
+          enabled: false,
+          events: []
+        },
+        picarto: {
+          channelID: null,
+          channels: [],
+          enabled: false,
+          events: []
         }
       },
       blacklisted: {
@@ -205,6 +226,7 @@ export default class DatabaseManager {
     const model: UserModel = {
       userID: id,
       prefix: 'aoba ',
+      modifiedAt: Date.now(),
       blacklisted: {
         enforcer: null,
         reason: null,

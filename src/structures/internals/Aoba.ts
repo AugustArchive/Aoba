@@ -11,15 +11,18 @@ import TwitchWebhook from 'twitch-webhook';
 import EventManager from '../managers/EventManager';
 import RedisManager from '../managers/RedisManager';
 import TaskManager from '../managers/TaskManager';
+import RestClient from './RESTClient';
 
 export interface Config {
   databaseUrl: string;
   environment: 'development' | 'production';
-  twitch: {
-    clientID: string;
-    callbackUrls: {
-      [x in 'development' | 'production']: string;
-    }
+  webhooks: {
+    twitch: {
+      clientID: string;
+      callbackUrls: {
+        [x in 'development' | 'production']: string;
+      }
+    };
   };
   discord: {
     token: string;
@@ -54,6 +57,7 @@ export class Aoba {
   public redis: RedisManager;
   public tasks: TaskManager;
   public http: HttpClient;
+  public rest: RestClient;
   public rss: RssEmitter;
 
   constructor(config: Config) {
@@ -65,10 +69,11 @@ export class Aoba {
     this.database = new DatabaseManager(config);
     this.logger = new Logger();
     this.twitch = new TwitchWebhook({
-      client_id: config.twitch.clientID,
-      callback: config.twitch.callbackUrls[config.environment],
+      client_id: config.webhooks.twitch.clientID,
+      callback: config.webhooks.twitch.callbackUrls[config.environment],
       secret: true,
       listen: {
+        autoStart: false,
         port: config.ports.twitch
       }
     });
@@ -80,9 +85,10 @@ export class Aoba {
     this.config = new ConfigManager(config);
     this.events = new EventManager(this);
     this.tasks = new TaskManager(this);
-    this.http = new HttpClient();
-    this.rss = new RssEmitter();
     this.redis = new RedisManager(this);
+    this.http = new HttpClient();
+    this.rest = new RestClient(this);
+    this.rss = new RssEmitter();
   }
 
   getEmbed() {

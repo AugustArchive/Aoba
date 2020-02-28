@@ -26,7 +26,8 @@ export function Cooldown(amount: number): MethodDecorator {
   // Factory function to run this when the command is called
   return (target: any, prop: string | symbol) => {
     const property = String(prop);
-
+    
+    if (property !== 'run') throw new SyntaxError('All cooldown definitions must be in the "run" function');
     if (target.prototype !== undefined) throw new SyntaxError(`All cooldown definition functions cannot be static (${target.name}#${property})`);
     if (target.constructor[CooldownSymbol]) throw new SyntaxError(`Cooldown definition is already set in the parent class (${target.name}#${property})`);
     target.constructor[CooldownSymbol] = cooldown;

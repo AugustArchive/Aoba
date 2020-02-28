@@ -1,5 +1,5 @@
 import { Aoba, Logger, Command, CommandContext, getCooldownDefinitions } from '..';
-import { Message, TextChannel } from 'eris';
+import { Message, TextChannel, Member } from 'eris';
 import { stripIndents } from 'common-tags';
 import { Collection } from '@augu/immutable';
 import { Constants } from '../../util';
@@ -16,15 +16,38 @@ class CommandInvocation {
     this.command = command;
   }
 
+  get member() {
+    return this.context.member || this.context.author;
+  }
+
+  get self() {
+    return this.context.guild ? this.context.self : this.context.bot.client.user;
+  }
+
   canInvoke() {
-    const owners = this.context.bot.config.get<string[]>('owners')!;
+    const owners = this.context.bot.config.get<string[]>('owners', []);
     
     if (this.command.guildOnly && [1, 3, 4].includes(this.context.channel.type)) return `You need to be in a text channel to run the \`${this.command.name}\` command.`;
     if (this.command.ownerOnly && !owners.includes(this.context.author.id)) return `You must need to be a developer to run the \`${this.command.name}\` command.`;
-    if (
-      this.command.disabled.is && 
-      !this.oneTime
-    ) return `Command \`${this.command.name}\` is currently globally disabled because \`${this.command.disabled.reason}\``;
+    if (this.command.disabled.is && !this.oneTime) return `Command \`${this.command.name}\` is currently globally disabled because \`${this.command.disabled.reason}\``;
+    
+    if (!owners.includes(this.context.author.id)) {
+      if (this.member instanceof Member) {
+        const denial = this.command.userPermissions.some(x => !(this.member as Member).permission.has(x));
+        if (denial) {
+          const needed = this.command.userPermissions.filter(x => !(this.member as Member).permission.has(x));
+          return `You are missing the current permissions: ${needed.join(', ')}`;
+        }
+      }
+
+      if (this.self instanceof Member) {
+        const denial = this.command.botPermissions.some(x => !(this.member as Member).permission.has(x));
+        if (denial) {
+          const needed = this.command.botPermissions.filter(x => !(this.member as Member).permission.has(x));
+          return `U-um..., I am missing the following permissions: ${needed.join(', ')}`;
+        }
+      }
+    }
 
     return null;
   }
@@ -147,8 +170,16 @@ export default class CommandService {
 
       invocation.command.inject(this.bot);
       try {
-        await run.apply(invocation.command, [ctx]);
+        if (isSub) {
+          ctx.args.raw.shift();
+          await run.apply(invocation.command, [ctx]);
+          this.bot.prometheus.commandsExecuted.inc();
+          this.bot.statistics.inc(invocation.command);
+          this.logger.info(`Ran command ${invocation.command.name} for ${ctx.author.username} in ${ctx.guild!.name}`);
+          return; // Don't conflict with subcommands and parent commands
+        }
 
+        await invocation.command.run(ctx);
         this.bot.prometheus.commandsExecuted.inc();
         this.bot.statistics.inc(invocation.command);
         this.logger.info(`Ran command ${invocation.command.name} for ${ctx.author.username} in ${ctx.guild!.name}`);

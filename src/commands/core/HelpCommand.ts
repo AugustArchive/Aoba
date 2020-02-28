@@ -55,12 +55,13 @@ export default class HelpCommand extends Command {
 
         embed
           .addField('Module', command.module, true)
-          .addField('Disabled', command.disabled.is ? `Yes (**${command.disabled.reason}**)` : 'No')
-          .addField('Guild Only', command.guildOnly ? 'Yes' : 'No')
-          .addField('Owner Only', command.ownerOnly ? 'Yes' : 'No')
-          .addField('User Permissions Required', command.userPermissions.length ? command.userPermissions.map(s => s).join(' | ') : 'None')
-          .addField('Bot Permissions Required', command.botPermissions.length ? command.botPermissions.map(s => s).join(' | ') : 'None');
+          .addField('Disabled', command.disabled.is ? `Yes (**${command.disabled.reason}**)` : 'No', true)
+          .addField('Guild Only', command.guildOnly ? 'Yes' : 'No', true)
+          .addField('Owner Only', command.ownerOnly ? 'Yes' : 'No', true)
+          .addField('User Permissions Required', command.userPermissions.length ? command.userPermissions.map(s => s).join(' | ') : 'None', true)
+          .addField('Bot Permissions Required', command.botPermissions.length ? command.botPermissions.map(s => s).join(' | ') : 'None', true);
 
+        if (!command.subcommands.empty) embed.addField('Subcommands', command.subcommands.map(x => `**${x.name}**: ${x.description}`).join('\n'));
         return void ctx.embed(embed);
       }
       else {

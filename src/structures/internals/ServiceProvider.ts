@@ -2,6 +2,11 @@ import { Aoba } from '.';
 
 export abstract class ServiceProvider<T = any> {
   /**
+   * Private interval to run the service provider
+   */
+  private interval!: NodeJS.Timer;
+
+  /**
    * The service provider's name
    */
   public name: string;
