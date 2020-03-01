@@ -14,19 +14,6 @@ export const server: string = 'https://discord.gg/yDnbEDH';
 export enum Module {
   Developer = 'Developer',
   Settings = 'Settings',
-  Search = 'Search',
-  Other = 'other',
-  Core = 'Core',
-  Docs = 'Documentation'
-}
-
-/**
- * Enum of all documentation sites' APIs
- * 
- * Avaliable sites:
- * 
- * - discord.js.org
- */
-export enum DocSites {
-  DiscordJS = 'https://djsdocs.sorta.moe/v2/embed?${query}'
+  Other = 'Other',
+  Core = 'Core'
 }

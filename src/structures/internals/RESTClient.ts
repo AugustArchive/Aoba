@@ -47,7 +47,8 @@ export default class RestClient {
         if (users.length > 0) return resolve(users[0]);
       } 
       else {
-
+        const users = this.bot.client.users.filter(user => user.username.toLowerCase().includes(query.toLowerCase()));
+        if (users.length > 0) return resolve(users[0]);
       }
 
       reject(`User by "${query}" was not found`);
@@ -83,6 +84,21 @@ export default class RestClient {
       } 
 
       reject(`No channel called "${query}" was not found.`);
+    });
+  }
+
+  getGuild(query: string) {
+    return new Promise<Guild>((resolve, reject) => {
+      if (/^\d+$/.test(query)) {
+        const guild = this.bot.client.guilds.get(query);
+        if (guild) return resolve(guild);
+      } 
+      else {
+        const guilds = this.bot.client.guilds.filter((guild) => guild.name.toLowerCase().includes(query.toLowerCase()));
+        if (guilds.length > 0) return resolve(guilds[0]);
+      }
+
+      reject(`Guild by "${query}" was not found`);
     });
   }
 }

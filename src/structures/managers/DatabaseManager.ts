@@ -90,7 +90,7 @@ export default class DatabaseManager {
   /**
    * Gets a list of all collections avaliable
    */
-  private get collections() {
+  get collections() {
     return {
       guilds: this.db.collection<GuildModel>('guilds'),
       users: this.db.collection<UserModel>('users')
