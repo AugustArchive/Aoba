@@ -12,6 +12,7 @@ export const server: string = 'https://discord.gg/yDnbEDH';
  * Enum of all modules avaliable
  */
 export enum Module {
+  Developer = 'Developer',
   Settings = 'Settings',
   Search = 'Search',
   Other = 'other',

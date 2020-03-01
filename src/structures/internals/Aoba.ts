@@ -124,10 +124,8 @@ export class Aoba {
     await this.database.dispose();
     this.redis.dispose();
     this.client.disconnect({ reconnect: false });
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
+    
     this.logger.warn('Clearing all collection values...');
-    this.documentation.clear();
     this.prometheus.dispose();
     this.providers.clear();
     this.commands.clear();

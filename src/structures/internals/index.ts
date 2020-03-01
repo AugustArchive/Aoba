@@ -2,7 +2,6 @@
 export * from './MessageCollector';
 export * from './ServiceProvider';
 export * from './ArgumentParser';
-export * from './Documentation';
 export * from './EmbedBuilder';
 export * from './Listener';
 export * from './Context';

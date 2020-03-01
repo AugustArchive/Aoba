@@ -3,6 +3,7 @@ import { Message, TextChannel, Member } from 'eris';
 import { stripIndents } from 'common-tags';
 import { Collection } from '@augu/immutable';
 import { Constants } from '../../util';
+import { Module } from '../../util/Constants';
 
 // Partially stolen from Nino (edge branch)
 class CommandInvocation {
@@ -109,7 +110,7 @@ export default class CommandService {
 
     // Check for prefixes
     const mention = new RegExp(`^<@!?${this.bot.client.user.id}> `).exec(msg.content);
-    const prefixes = ['aoba ', 'ao!', `${mention}`, settings.prefix, user.prefix];
+    const prefixes = ['aoba ', 'ao!', `${mention}`, settings.prefix];
     let prefix: string | null = null;
 
     for (const pre of prefixes) if (msg.content.startsWith(pre)) prefix = pre;
@@ -170,14 +171,14 @@ export default class CommandService {
           ctx.args.raw.shift();
           await run.apply(invocation.command, [ctx]);
           this.bot.prometheus.commandsExecuted.inc();
-          this.bot.statistics.inc(invocation.command);
+          if (invocation.command.module !== Module.Developer) this.bot.statistics.inc(invocation.command);
           this.logger.info(`Ran command ${invocation.command.name} for ${ctx.author.username} in ${ctx.guild!.name}`);
           return; // Don't conflict with subcommands and parent commands
         }
 
         await invocation.command.run(ctx);
         this.bot.prometheus.commandsExecuted.inc();
-        this.bot.statistics.inc(invocation.command);
+        if (invocation.command.module !== Module.Developer) this.bot.statistics.inc(invocation.command);
         this.logger.info(`Ran command ${invocation.command.name} for ${ctx.author.username} in ${ctx.guild!.name}`);
       }
       catch(ex) {

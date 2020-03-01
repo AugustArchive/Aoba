@@ -161,7 +161,7 @@ export abstract class Command {
    * The command's signature
    */
   get signature() {
-    return this.usage === '' ? `aoba ${this.name} ${this.usage}` : `aoba ${this.name}`;
+    return this.usage === '' ? `aoba ${this.name} ${this.usage}` : `aoba ${this.name} ${this.usage}`;
   }
 
   /** Returns an immutable object */

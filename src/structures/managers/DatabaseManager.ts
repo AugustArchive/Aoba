@@ -11,25 +11,25 @@ interface GuildModel {
       enabled: boolean;
       channelID: string | null;
       channels: string[];
-      events: string[];
+      events: string[] | 'all';
     };
     youtube: {
       enabled: boolean;
       channelID: string | null;
       channels: string[];
-      events: string[];
+      events: string[] | 'all';
     };
     twitch: {
       enabled: boolean;
       channelID: string | null;
       channels: string[];
-      events: string[];
+      events: string[] | 'all';
     };
     mixer: {
       enabled: boolean;
       channelID: string | null;
       channels: string[];
-      events: string[];
+      events: string[] | 'all';
     };
   };
   blacklisted: {
@@ -51,7 +51,6 @@ interface UserModel {
     is: boolean;
   };
   modifiedAt: number;
-  prefix: string;
   userID: string;
 }
 
@@ -225,7 +224,6 @@ export default class DatabaseManager {
   async createUser(id: string) {
     const model: UserModel = {
       userID: id,
-      prefix: 'aoba ',
       modifiedAt: Date.now(),
       blacklisted: {
         enforcer: null,
