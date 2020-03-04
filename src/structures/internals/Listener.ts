@@ -15,16 +15,19 @@ export class Listener {
   /**
    * The bot instance itself
    */
-  public bot: Aoba;
+  public bot!: Aoba;
 
   /**
    * Creates a new instance of the listener class
    * @param bot The bot instance
    * @param name The listener name
    */
-  constructor(bot: Aoba, name: string) {
+  constructor(name: string) {
     this.events = new Collection();
     this.name = name;
+  }
+
+  inject(bot: Aoba) {
     this.bot = bot;
   }
 }

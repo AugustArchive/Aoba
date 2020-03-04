@@ -1,5 +1,6 @@
 import { MongoClient, Admin, Db } from 'mongodb';
 import { Config, Logger } from '..';
+import { Guild, User } from 'eris';
 
 interface GuildModel {
   providers: {
@@ -253,5 +254,26 @@ export default class DatabaseManager {
    */
   updateUser(id: string, data: any) {
     return this.collections.users.updateOne({ userID: id }, data);
+  }
+
+  /**
+   * Adds a blacklist to a user or guild
+   * @param type The type to blacklist
+   * @param entity The entity to blacklist
+   * @param reason Reason to supply the blacklist
+   */
+  async addBlacklist(type: 'guild' | 'user', entity: User | Guild, reason?: string) {
+    switch (type) {
+      case 'guild': {
+        const collection = this.collections.guilds;
+        await collection.updateOne({ id: entity.id }, {
+          $set: {
+            'blacklisted.reason': reason === undefined ? null : reason!,
+            'blacklisted.is': true
+          }
+        });
+      } break;
+      case 'user': {} break;
+    }
   }
 }

@@ -21,20 +21,23 @@ export abstract class Task {
   /**
    * The bot instance itself
    */
-  public bot: Aoba;
+  public bot!: Aoba;
 
   /**
    * Creates a new Task instance
    * @param bot The bot instance
    * @param info The metadata
    */
-  constructor(bot: Aoba, info: TaskMetadata) {
+  constructor(info: TaskMetadata) {
     this.info = info;
-    this.bot = bot;
   }
 
   /**
    * Runs the task when the interval timeout is reached
    */
   public abstract run(): Promise<void>;
+
+  inject(bot: Aoba) {
+    this.bot = bot;
+  }
 }

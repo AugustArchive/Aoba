@@ -30,9 +30,10 @@ export default class ServiceProviderManager extends Collection<ServiceProvider> 
 
     this.logger.info(`Now loading ${providers.length} providers!`);
     for (const provider of providers) {
-      const instance: ServiceProvider = new (provider as any)(this);
-      this.set(instance.name, instance);
+      const instance: ServiceProvider = new (provider as any)();
 
+      instance.inject(this.bot);
+      this.set(instance.name, instance);
       this.logger.info(`Built the ${instance.name} service provider`);
     }
   }

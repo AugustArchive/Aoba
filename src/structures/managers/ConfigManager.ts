@@ -4,7 +4,7 @@ export default class ConfigManager {
   /**
    * The config itself
    */
-  private cache: Config;
+  public cache: Config;
 
   /**
    * Creates a new instance of the config manager

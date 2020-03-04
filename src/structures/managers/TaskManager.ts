@@ -38,8 +38,9 @@ export default class TaskManager extends Collection<Task> {
     this.logger.info(`Found ${files.length} tasks!`);
     for (const file of files) {
       const instance = await import(utils.getArbitrayPath('tasks', file));
-      const task: Task = instance.default ? new instance.default(this.bot) : new instance(this.bot);
+      const task: Task = instance.default ? new instance.default() : new instance();
 
+      task.inject(this.bot);
       this.set(task.info.name, task);
       this.logger.info(`Built task ${task.info.name}!`);
     }

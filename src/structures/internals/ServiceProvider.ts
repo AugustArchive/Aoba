@@ -7,6 +7,11 @@ export abstract class ServiceProvider<T = any> {
   private interval!: NodeJS.Timer;
 
   /**
+   * Amount of milliseconds to retrive data to do notifications
+   */
+  public timeout: number;
+
+  /**
    * The service provider's name
    */
   public name: string;
@@ -14,16 +19,16 @@ export abstract class ServiceProvider<T = any> {
   /**
    * The bot instance itself
    */
-  public bot: Aoba;
+  public bot!: Aoba;
 
   /**
    * Creates a new instance of the ServiceProvider
-   * @param bot The bot instance
    * @param name The provider's name
+   * @param timeout The amount of milliseconds to retrive data to do notifications
    */
-  constructor(bot: Aoba, name: string) {
+  constructor(name: string, timeout: number) {
     this.name = name;
-    this.bot = bot;
+    this.timeout = timeout;
   }
 
   /**
@@ -31,4 +36,8 @@ export abstract class ServiceProvider<T = any> {
    * @param args Additional arguments to supply
    */
   public abstract provide(...args: any[]): Promise<T>;
+
+  inject(bot: Aoba) {
+    this.bot = bot;
+  }
 }

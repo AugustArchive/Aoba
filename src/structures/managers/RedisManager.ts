@@ -15,7 +15,7 @@ export default class RedisManager {
   /**
    * The logger instance
    */
-  private logger: Logger  
+  private logger: Logger;
   
   /**
    * The current status of the Redis manager
