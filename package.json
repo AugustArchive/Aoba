@@ -36,7 +36,7 @@
     "@types/common-tags": "1.8.0",
     "@types/feedparser": "2.2.3",
     "@types/ioredis": "4.14.8",
-    "@types/mongodb": "3.5.0",
+    "@types/mongodb": "3.5.2",
     "@types/node": "13.7.7",
     "@types/puppeteer": "2.0.1",
     "@typescript-eslint/eslint-plugin": "2.22.0",
